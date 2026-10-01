@@ -230,7 +230,16 @@ export function initMascot() {
     if (isReduced) return;
 
     const st = machine.getState();
-    if (st !== 'aim' && st !== 'jump' && st !== 'sleep') {
+    if (st === 'sleep') {
+      // Gündüz uykusu kısa bir şekerlemedir (her tikte %25 uyanma, ort. ~25 sn); gece sabaha kadar uyur.
+      // Önceden doğal döngü 'sleep'i atladığı için gündüz rastgele uyuyan kedi bir daha uyanmıyordu.
+      if (getCurrentMode() === 'day' && Math.random() < 0.25) {
+        machine.setState('stretch');
+        setTimeout(() => machine.setState('sit'), 1200);
+      }
+      return;
+    }
+    if (st !== 'aim' && st !== 'jump') {
       machine.tickNatural();
     }
   }, 6000);
