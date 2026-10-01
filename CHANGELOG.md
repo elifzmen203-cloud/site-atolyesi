@@ -1,5 +1,12 @@
 # Değişiklik kaydı
 
+## 2026-10-01 · düzeltme (Claude, döngü sonrası, Elif isteği)
+- **Kasma ve tıklanamama:** Dil her değiştiğinde `initApp()` dinleyicileri yeniden ekliyordu. Sayıları ikiye katlanıyor ve her biri sayfayla önizlemeyi baştan üretiyordu. Artık dinleyiciler bir kez kuruluyor, dil değişince yalnız DOM çiziliyor (`main.js`).
+- **Önizleme:** Her alan hem `input` hem `change` olayında siteyi iki kez üretiyordu. Artık yazı alanları 300 ms gecikmeyle, seçim kutuları anında ve tek olayla güncelleniyor (`form.js`).
+- **Renk seçici:** Sürüklerken her adımda bütün sekme yeniden çiziliyordu. Artık bırakınca (`change`) çiziliyor (`tools.js`).
+- **Çeviri:** Palet ve kontrast etiketleri, font kategorileri, kod parçası başlıkları ve önizlemeleri, aria etiketleri ve hata bildirimi dil dosyalarına taşındı (35 yeni anahtar × 4 dil).
+- **Test:** `test/hardcoded-text.test.js`. Arayüz dosyalarında koda gömülü Türkçe metni ve dil dosyasında olmayan `t()` anahtarlarını yakalar.
+
 ## 2026-10-01 · Tur 2 (Antigravity)
 - **Paketler:** `vite` (hızlı statik derleme ve geliştirme ortamı), `jszip` (tarayıcıda ve test ortamında .zip arşivi paketleme).
 - **Yönlendirme & Altyapı:** Hash router (`#/`, `#/araclar`, `#/nasil`, `#/gizlilik`), Vite yapılandırması (`base: '/site-atolyesi/'`), GitHub Pages CI/CD iş akışı (`.github/workflows/deploy.yml`), Windows tek tık yayın betiği (`yayinla.cmd`).

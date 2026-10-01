@@ -195,29 +195,30 @@ export function createGeneratorForm(initialConfig = {}, onUpdate, onDownload) {
     return currentConfig;
   }
 
-  // Real-time update listeners on all inputs
-  const inputs = formWrapper.querySelectorAll('input, select, textarea');
-  inputs.forEach(el => {
-    el.addEventListener('input', () => {
+  // Canlı önizleme: yazı alanları kısa gecikmeyle (her tuşta site yeniden üretilmesin),
+  // seçim ve onay kutuları anında; her alan tek olaya bağlıdır (input + change birlikte çift üretim yapıyordu).
+  let timer = null;
+  const scheduleUpdate = (delay) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
       if (onUpdate) onUpdate(readConfigFromDom());
-    });
-    el.addEventListener('change', () => {
-      if (onUpdate) onUpdate(readConfigFromDom());
-    });
+    }, delay);
+  };
+  formWrapper.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+    el.addEventListener('input', () => scheduleUpdate(300));
+  });
+  formWrapper.querySelectorAll('select, input[type="checkbox"]').forEach(el => {
+    el.addEventListener('change', () => scheduleUpdate(0));
   });
 
-  formWrapper.querySelector('#btn-update-site')?.addEventListener('click', () => {
-    if (onUpdate) onUpdate(readConfigFromDom());
-  });
+  formWrapper.querySelector('#btn-update-site')?.addEventListener('click', () => scheduleUpdate(0));
 
   formWrapper.querySelector('#btn-download-zip')?.addEventListener('click', () => {
     if (onDownload) onDownload(readConfigFromDom());
   });
 
-  // Initial trigger
-  setTimeout(() => {
-    if (onUpdate) onUpdate(currentConfig);
-  }, 10);
+  // İlk önizleme
+  scheduleUpdate(10);
 
   return { element: formWrapper, getConfig: () => currentConfig };
 }

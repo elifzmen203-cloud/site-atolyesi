@@ -53,14 +53,14 @@ export function renderHomePage() {
       <div class="preview-title-box">
         <h3 data-i18n="common.preview">${t('common.preview')}</h3>
       </div>
-      <div class="preview-devices" role="group" aria-label="Ekran boyutu seçimi">
+      <div class="preview-devices" role="group" aria-label="${t('common.deviceGroup')}">
         <button class="device-btn active" data-device="desktop" data-i18n="common.desktop">${t('common.desktop')}</button>
         <button class="device-btn" data-device="tablet" data-i18n="common.tablet">${t('common.tablet')}</button>
         <button class="device-btn" data-device="mobile" data-i18n="common.mobile">${t('common.mobile')}</button>
       </div>
     </div>
     <div class="iframe-wrapper">
-      <iframe id="preview-iframe" class="site-iframe" title="Web Sitesi Canlı Önizleme" sandbox="allow-same-origin allow-scripts"></iframe>
+      <iframe id="preview-iframe" class="site-iframe" title="${t('common.previewTitle')}" sandbox="allow-same-origin allow-scripts"></iframe>
     </div>
   `;
 
@@ -93,7 +93,7 @@ export function renderHomePage() {
       showToast(t('gen.downloadSuccess'));
     } catch (err) {
       console.error('ZIP compilation error:', err);
-      showToast('İndirme sırasında bir hata oluştu.');
+      showToast(t('gen.downloadError'));
     }
   }
 

@@ -109,7 +109,7 @@ export function renderToolsPage() {
                   ${c.hex}
                 </div>
                 <div class="swatch-info">
-                  <p class="swatch-label">${c.label}</p>
+                  <p class="swatch-label">${t(`tools.palette.role.${c.name}`)} (${c.name})</p>
                   <p class="swatch-hex">${c.hex}</p>
                 </div>
               </div>
@@ -120,14 +120,14 @@ export function renderToolsPage() {
             <h3 style="margin-bottom: 1rem;" data-i18n="tools.palette.contrast">${t('tools.palette.contrast')} (WCAG 2.1)</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
               <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border: 1px solid var(--border);">
-                <div style="font-weight: 600; margin-bottom: 0.35rem;">Yazı / Zemin Kontrastı</div>
+                <div style="font-weight: 600; margin-bottom: 0.35rem;">${t('tools.contrast.inkBg')}</div>
                 <div style="font-size: 1.25rem; font-weight: 700; color: var(--ink);">${inkBgRatio}:1</div>
-                <span class="contrast-badge ${inkBgRating.aaNormal ? 'pass' : 'fail'}">${inkBgRating.badge} (Gövde Metni)</span>
+                <span class="contrast-badge ${inkBgRating.aaNormal ? 'pass' : 'fail'}">${t(`tools.contrast.level.${inkBgRating.level}`)} (${t('tools.contrast.bodyText')})</span>
               </div>
               <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border: 1px solid var(--border);">
-                <div style="font-weight: 600; margin-bottom: 0.35rem;">Buton Metni / Buton Zemini</div>
+                <div style="font-weight: 600; margin-bottom: 0.35rem;">${t('tools.contrast.button')}</div>
                 <div style="font-size: 1.25rem; font-weight: 700; color: var(--ink);">${primaryBtnRatio}:1</div>
-                <span class="contrast-badge ${primaryBtnRating.aaNormal ? 'pass' : 'fail'}">${primaryBtnRating.badge} (Beyaz Buton)</span>
+                <span class="contrast-badge ${primaryBtnRating.aaNormal ? 'pass' : 'fail'}">${t(`tools.contrast.level.${primaryBtnRating.level}`)} (${t('tools.contrast.whiteButton')})</span>
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@ export function renderToolsPage() {
                 <div>
                   <div class="font-card-header">
                     <strong>${pair.name}</strong>
-                    <span class="font-category">${pair.category}</span>
+                    <span class="font-category">${t(`tools.fonts.cat.${pair.id}`)}</span>
                   </div>
                   <div class="font-preview-heading" style="font-family: ${pair.heading};">
                     ${pair.name.split('+')[0].trim()}
@@ -241,16 +241,16 @@ export function renderToolsPage() {
             ${snippets.map(s => `
               <div class="snippet-card">
                 <div class="snippet-preview">
-                  ${s.id === 'button' ? '<button class="btn btn-primary" style="margin-right:8px;">Hemen Başlayın</button><button class="btn btn-outline">Detaylar</button>' : ''}
-                  ${s.id === 'card' ? '<div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; width:220px;"><div style="font-weight:700;">Hizmet Kartı</div><p style="font-size:0.85rem; color:#64748b; margin:0.5rem 0;">Modern ve estetik web arayüzleri.</p><span style="color:#3b5bdb; font-size:0.85rem; font-weight:600;">İncele &rarr;</span></div>' : ''}
-                  ${s.id === 'navbar' ? '<div style="background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:0.5rem 1rem; width:100%; display:flex; justify-content:space-between; align-items:center;"><strong>Logo</strong><span style="font-size:0.8rem; color:#64748b;">Menü • İletişim</span></div>' : ''}
-                  ${s.id === 'footer' ? '<div style="background:#1f2430; color:#fff; border-radius:6px; padding:1rem; width:100%; text-align:center; font-size:0.85rem;">© 2026 Atölye. Tüm hakları saklıdır.</div>' : ''}
+                  ${s.id === 'button' ? `<button class="btn btn-primary" style="margin-right:8px;">${t('tools.snippets.demo.start')}</button><button class="btn btn-outline">${t('tools.snippets.demo.details')}</button>` : ''}
+                  ${s.id === 'card' ? `<div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; width:220px;"><div style="font-weight:700;">${t('tools.snippets.demo.cardTitle')}</div><p style="font-size:0.85rem; color:#64748b; margin:0.5rem 0;">${t('tools.snippets.demo.cardText')}</p><span style="color:#3b5bdb; font-size:0.85rem; font-weight:600;">${t('tools.snippets.demo.cardLink')} &rarr;</span></div>` : ''}
+                  ${s.id === 'navbar' ? `<div style="background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:0.5rem 1rem; width:100%; display:flex; justify-content:space-between; align-items:center;"><strong>Logo</strong><span style="font-size:0.8rem; color:#64748b;">${t('tools.snippets.demo.navLinks')}</span></div>` : ''}
+                  ${s.id === 'footer' ? `<div style="background:#1f2430; color:#fff; border-radius:6px; padding:1rem; width:100%; text-align:center; font-size:0.85rem;">© 2026 ${t('tools.snippets.demo.footer')}</div>` : ''}
                 </div>
                 <div class="snippet-body">
-                  <h3 style="margin-bottom: 0.5rem;">${s.name}</h3>
+                  <h3 style="margin-bottom: 0.5rem;">${t(`tools.snippets.${s.id === 'button' ? 'btn' : s.id}`)}</h3>
                   <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-                    <button class="btn btn-outline btn-sm btn-copy-html" data-id="${s.id}">HTML Kopyala</button>
-                    <button class="btn btn-outline btn-sm btn-copy-css" data-id="${s.id}">CSS Kopyala</button>
+                    <button class="btn btn-outline btn-sm btn-copy-html" data-id="${s.id}">${t('tools.snippets.copyHtml')}</button>
+                    <button class="btn btn-outline btn-sm btn-copy-css" data-id="${s.id}">${t('tools.snippets.copyCss')}</button>
                   </div>
                   <pre class="code-box"><code>${escapeCode(s.html)}</code></pre>
                 </div>
@@ -282,9 +282,13 @@ export function renderToolsPage() {
       const input = container.querySelector('#palette-base-input');
       const ruleSelect = container.querySelector('#palette-rule-select');
 
+      // Sürüklerken yalnız metin kutusu güncellenir; bütün sekme bırakınca (change) yeniden çizilir.
+      // Her `input` olayında yeniden çizmek renk seçiciyi kapatıp sayfayı kilitliyordu.
       picker?.addEventListener('input', (e) => {
+        if (input) input.value = e.target.value;
+      });
+      picker?.addEventListener('change', (e) => {
         baseColor = e.target.value;
-        if (input) input.value = baseColor;
         renderContent();
       });
 
@@ -314,7 +318,7 @@ export function renderToolsPage() {
         const paletteObj = {};
         colors.forEach(c => { paletteObj[c.name] = c.hex; });
         sessionStorage.setItem('sa.customPalette', JSON.stringify(paletteObj));
-        showToast(t('gen.buildBtn'));
+        showToast(t('tools.appliedToGen'));
         window.location.hash = '#/';
       });
     }
@@ -340,7 +344,7 @@ export function renderToolsPage() {
               body: pair.body,
               googleUrl: pair.googleUrl
             }));
-            showToast(t('gen.buildBtn'));
+            showToast(t('tools.appliedToGen'));
             window.location.hash = '#/';
           }
         });

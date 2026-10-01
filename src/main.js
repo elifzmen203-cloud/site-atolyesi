@@ -27,7 +27,7 @@ function renderHeader() {
         <span data-i18n="app.title">${t('app.title')}</span>
       </a>
 
-      <nav class="nav-menu" aria-label="Ana Menü">
+      <nav class="nav-menu" aria-label="${t('nav.aria')}">
         <a href="#/" class="nav-link" data-route="#/" data-i18n="nav.generator">${t('nav.generator')}</a>
         <a href="#/araclar" class="nav-link" data-route="#/araclar" data-i18n="nav.tools">${t('nav.tools')}</a>
         <a href="#/nasil" class="nav-link" data-route="#/nasil" data-i18n="nav.how">${t('nav.how')}</a>
@@ -87,7 +87,9 @@ function routeTo() {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-function initApp() {
+// Dil değişince yalnız DOM yeniden çizilir; dinleyiciler initApp'te bir kez kurulur.
+// (Önceden her dil değişiminde dinleyiciler yeniden ekleniyor, sayıları ikiye katlanıp sayfayı kilitliyordu.)
+function renderApp() {
   app.innerHTML = '';
 
   const header = renderHeader();
@@ -107,12 +109,13 @@ function initApp() {
   `;
   app.appendChild(footer);
 
-  window.addEventListener('hashchange', routeTo);
-  onLangChange(() => {
-    initApp();
-  });
-
   routeTo();
+}
+
+function initApp() {
+  window.addEventListener('hashchange', routeTo);
+  onLangChange(renderApp);
+  renderApp();
 }
 
 initApp();

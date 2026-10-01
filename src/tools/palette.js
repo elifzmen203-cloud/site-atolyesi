@@ -105,7 +105,9 @@ export function getWcagRating(ratio) {
     aaaNormal: ratio >= 7.0,
     aaLarge: ratio >= 3.0,
     aaaLarge: ratio >= 4.5,
-    badge: ratio >= 7.0 ? 'AAA' : ratio >= 4.5 ? 'AA' : ratio >= 3.0 ? 'AA (Büyük)' : 'Yetersiz'
+    badge: ratio >= 7.0 ? 'AAA' : ratio >= 4.5 ? 'AA' : ratio >= 3.0 ? 'AA (Büyük)' : 'Yetersiz',
+    // Arayüz `level` ile çevirir (tools.contrast.level.*); `badge` geriye dönük uyum için kalır.
+    level: ratio >= 7.0 ? 'aaa' : ratio >= 4.5 ? 'aa' : ratio >= 3.0 ? 'aaLarge' : 'fail'
   };
 }
 
