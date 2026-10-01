@@ -9,7 +9,8 @@
 // Üst kenarı raf olabilecek kapsayıcılar.
 export const PERCH_SELECTOR = [
   '.form-panel', '.preview-panel', '.tool-section', '.card-box', '.info-card', '.font-card',
-  '.snippet-card', '.swatch-card', '.copy-item', '.generator-view', '.tab-list',
+  '.snippet-card', '.swatch-card', '.copy-item', '.generator-view', '.tab-list', '.tab-content',
+  '.form-group', '.iframe-wrapper', '.checkbox-group', '.palette-swatches', '.info-grid', '.main-content > *',
   '[class*="wizard"]', '[class*="studio"]', '[class*="panel"]', '[class*="card"]', 'section', 'footer'
 ].join(',');
 

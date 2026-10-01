@@ -32,7 +32,7 @@ export function initMascot() {
 
   const reduced = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const isNight = () => getCurrentMode() === 'night';
-  const size = () => (window.innerWidth < 600 ? { w: 62, h: 50 } : { w: 86, h: 69 });
+  const size = () => (window.innerWidth < 600 ? { w: 50, h: 40 } : { w: 64, h: 51 });
 
   const machine = createCatMachine({ initialState: 'sit' });
 
@@ -223,7 +223,9 @@ export function initMascot() {
     if (px !== null) {
       target = nearestSpot(spots, px, py, 420);
     } else {
-      const s = pick(spots);
+      // Ekranın alt kenarı yalnız yedek: çoğunlukla kartların/panellerin üstü seçilir.
+      const shelves = spots.filter(s => !s.floor);
+      const s = pick(shelves.length && Math.random() < 0.85 ? shelves : spots);
       target = { x: rand(s.x1, s.x2), y: s.y, run: s };
     }
     if (!target) return false;

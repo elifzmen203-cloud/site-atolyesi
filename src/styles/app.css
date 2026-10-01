@@ -96,7 +96,8 @@ body {
 
 /* Page Container */
 .main-content {
-  padding: 2rem 0 4rem;
+  /* Üstteki 4.5rem: Tatlım'ın kartların üst kenarında yürüyebileceği "raf" boşluğu (kedi 51px). */
+  padding: 4.5rem 0 4rem;
   min-height: calc(100vh - 160px);
 }
 
