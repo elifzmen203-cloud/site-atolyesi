@@ -56,7 +56,12 @@ function mouth(kind) {
 }
 
 /** Baş: (x, y) merkez. */
-function head({ x, y, eye = 'open', mouthKind = 'w', tilt = 0, cls = '' }) {
+const chefHat = `<g class="cat-chefhat">
+    <path class="o" fill="#fffdf9" d="M-12,-20 C-20,-22 -20,-34 -11,-34 C-10,-42 2,-44 5,-37 C12,-42 22,-36 18,-27 C22,-24 20,-19 14,-19 Z"/>
+    <rect class="o" x="-12" y="-22" width="27" height="6" rx="2.5" fill="${'#84d2c0'}"/>
+  </g>`;
+
+function head({ x, y, eye = 'open', mouthKind = 'w', tilt = 0, cls = '', hat = false }) {
   return `<g class="cat-head ${cls}" transform="translate(${x} ${y}) rotate(${tilt})">
     <path class="o" fill="${C.fur}" d="M-21,-6 L-17,-27 L-4,-17 Z"/>
     <path fill="${C.earInner}" d="M-17,-10 L-15.5,-21 L-8,-16 Z"/>
@@ -71,6 +76,7 @@ function head({ x, y, eye = 'open', mouthKind = 'w', tilt = 0, cls = '' }) {
     <path d="M1.5,3.5 h5 l-2.5,3 z" fill="${C.nose}"/>
     ${mouth(mouthKind)}
     <path class="o-whisker" d="M-16,8 l-9,-1 M-16,11 l-9,2 M22,8 l9,-1 M22,11 l9,2"/>
+    ${hat ? chefHat : ''}
   </g>`;
 }
 
@@ -99,7 +105,7 @@ function leg(x, y, h, cls, shade = false) {
 
 /* ---------- Pozlar ---------- */
 
-function sitPose({ eye = 'open', mouthKind = 'w', tilt = 0, extra = '', headY = 30, headX = 56, paws = true, headWrap = 'cat-headwrap' } = {}) {
+function sitPose({ eye = 'open', mouthKind = 'w', tilt = 0, extra = '', headY = 30, headX = 56, paws = true, headWrap = 'cat-headwrap', hat = false } = {}) {
   return `${shadow(50, 30)}
     ${tail('M32,72 C14,74 8,60 16,50')}
     <g class="cat-body">
@@ -109,7 +115,7 @@ function sitPose({ eye = 'open', mouthKind = 'w', tilt = 0, extra = '', headY = 
       ${paws ? `<ellipse class="o" cx="50" cy="75" rx="6.5" ry="4" fill="${C.fur}"/><ellipse class="o" cx="62" cy="75" rx="6.5" ry="4" fill="${C.fur}"/>` : ''}
     </g>
     ${scarf('M40,43 q14,9 30,-1', 56, 50)}
-    <g class="${headWrap}">${head({ x: headX, y: headY, eye, mouthKind, tilt })}</g>
+    <g class="${headWrap}">${head({ x: headX, y: headY, eye, mouthKind, tilt, hat })}</g>
     ${extra}`;
 }
 
@@ -201,24 +207,82 @@ function stretchPose() {
     ${head({ x: 70, y: 54, eye: 'closed', mouthKind: 'tongue', tilt: -6 })}`;
 }
 
+/** Bilgisayar: laptopun arkasında oturur, patileri kapağın üstünden klavyeye vurur, üstünden küçük işaretler yükselir. */
 function laptopPose() {
-  const laptop = `<g class="cat-laptop">
-      <path class="o" fill="${C.laptop}" d="M84,70 L91,42 L95,43 L89,71 Z"/>
-      <circle cx="91" cy="56" r="2" fill="#fff" opacity="0.9"/>
-      <rect class="o" x="58" y="68" width="34" height="6" rx="2" fill="${C.laptop}"/>
-      <ellipse class="o cat-tap-l" cx="66" cy="67" rx="5" ry="3.4" fill="${C.fur}"/>
-      <ellipse class="o cat-tap-r" cx="76" cy="67" rx="5" ry="3.4" fill="${C.fur}"/>
+  return `${shadow(50, 34)}
+    ${tail('M64,72 C84,74 92,60 84,50')}
+    <ellipse class="o" cx="46" cy="55" rx="23" ry="19" fill="${C.fur}"/>
+    <path class="stripe-thick" d="M27,46 q5,3 4,9"/>
+    ${scarf('M33,42 q14,8 28,-1', 48, 49)}
+    ${head({ x: 46, y: 28, eye: 'open', mouthKind: 'w' })}
+    <ellipse class="o cat-tap-l" cx="38" cy="51" rx="5.5" ry="3.8" fill="${C.fur}"/>
+    <ellipse class="o cat-tap-r" cx="56" cy="51" rx="5.5" ry="3.8" fill="${C.fur}"/>
+    <g class="cat-laptop">
+      <rect class="o" x="24" y="52" width="48" height="26" rx="4" fill="${C.laptop}"/>
+      <g fill="#fff" opacity="0.95">
+        <ellipse cx="48" cy="67" rx="4.2" ry="3.6"/>
+        <circle cx="43" cy="61.5" r="1.6"/><circle cx="48" cy="60" r="1.6"/><circle cx="53" cy="61.5" r="1.6"/>
+      </g>
+    </g>
+    <g class="cat-float">
+      <text x="74" y="30" class="float-icon fi1">&lt;/&gt;</text>
+      <text x="84" y="40" class="float-icon fi2">♥</text>
+      <text x="80" y="18" class="float-icon fi3">✓</text>
     </g>`;
-  return sitPose({ headX: 54, headY: 31, tilt: 6, paws: false, extra: laptop });
 }
 
+/** Yemek: mama kabı ve pipetli süt bardağı; başını sallayarak yer. */
 function eatPose() {
-  const bowl = `<g class="cat-bowl">
-      <path class="o" fill="${C.bowl}" d="M70,66 h26 q-2,11 -13,11 q-11,0 -13,-11 z"/>
-      <g fill="#c98b5e"><circle cx="78" cy="65" r="2.2"/><circle cx="83" cy="64" r="2.2"/><circle cx="88" cy="65" r="2.2"/></g>
-      <path d="M77,71 q6,3 12,0" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.8"/>
+  const food = `<g class="cat-bowl">
+      <path class="o" fill="${C.bowl}" d="M64,66 h24 q-2,11 -12,11 q-10,0 -12,-11 z"/>
+      <g fill="#c98b5e"><circle cx="71" cy="65" r="2.2"/><circle cx="76" cy="63.8" r="2.2"/><circle cx="81" cy="65" r="2.2"/></g>
+      <path d="M70,71 q6,3 12,0" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.8"/>
+    </g>
+    <g class="cat-milk">
+      <path d="M96,57 L99,44 L94,42" fill="none" stroke="${C.outline}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M96,57 L99,44 L94,42" fill="none" stroke="${C.bowl}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect class="o" x="89" y="55" width="12" height="22" rx="2.5" fill="#fffdf9"/>
+      <rect x="90.5" y="63" width="9" height="12.5" rx="1.5" fill="${C.belly}"/>
+      <path d="M90.5,63 h9" stroke="${C.scarf}" stroke-width="1.6"/>
+    </g>
+    <g class="cat-crumb"><circle cx="66" cy="58" r="1.4" fill="#c98b5e"/><circle cx="62" cy="61" r="1.1" fill="#c98b5e"/></g>`;
+  return sitPose({ headX: 58, headY: 40, tilt: 18, eye: 'happy', mouthKind: 'small', extra: food, headWrap: 'cat-headwrap cat-nom' });
+}
+
+/** Bisküvi yapma: aşçı şapkasıyla hamuru sırayla yoğurur; hamur ezilir, un uçuşur, yanda oklava. */
+function bakePose() {
+  const kitchen = `<g class="cat-dough">
+      <ellipse class="o dough" cx="80" cy="72" rx="15" ry="6.5" fill="#f6e3b4"/>
+      <path d="M72,70 q3,-2 6,0 M82,69 q3,-2 6,0" stroke="#e3c98a" stroke-width="1.3" fill="none"/>
+    </g>
+    <ellipse class="o cat-knead-l" cx="73" cy="64" rx="5.5" ry="4" fill="${C.fur}"/>
+    <ellipse class="o cat-knead-r" cx="86" cy="64" rx="5.5" ry="4" fill="${C.fur}"/>
+    <g class="cat-flour" fill="#ffffff" stroke="#e8dcc8" stroke-width="0.6">
+      <circle class="flour f1" cx="76" cy="58" r="1.8"/><circle class="flour f2" cx="84" cy="56" r="1.4"/><circle class="flour f3" cx="90" cy="59" r="1.6"/>
+    </g>
+    <g class="cat-rollingpin">
+      <rect class="o" x="6" y="73" width="26" height="6" rx="3" fill="#e9c9a3"/>
+      <rect class="o" x="0" y="74.5" width="6" height="3" rx="1.5" fill="#d9ad84"/>
+      <rect class="o" x="32" y="74.5" width="6" height="3" rx="1.5" fill="#d9ad84"/>
     </g>`;
-  return sitPose({ headX: 60, headY: 40, tilt: 18, eye: 'closed', mouthKind: 'small', extra: bowl, headWrap: 'cat-headwrap cat-nom' });
+  return sitPose({ headX: 58, headY: 33, tilt: 12, eye: 'happy', mouthKind: 'w', paws: false, hat: true, extra: kitchen });
+}
+
+/** Sırt üstü uyku: göbek yukarıda, patiler havada, ara ara seğirir. */
+function sleepBackPose() {
+  return `${shadow(48, 36)}
+    ${tail('M18,66 C8,70 2,64 6,57')}
+    <g class="cat-breathe">
+      <ellipse class="o" cx="46" cy="63" rx="32" ry="14" fill="${C.fur}"/>
+      <ellipse cx="47" cy="57" rx="21" ry="6.5" fill="${C.belly}"/>
+      <path class="stripe-thick" d="M24,70 q2,-4 0.5,-7 M33,72 q2,-4 0.5,-7"/>
+    </g>
+    <g class="cat-twitch"><rect class="o" x="24" y="38" width="9" height="17" rx="4.5" fill="${C.fur}" transform="rotate(-16 28 50)"/></g>
+    <rect class="o" x="35" y="40" width="9" height="15" rx="4.5" fill="${C.furShade}" transform="rotate(12 39 50)"/>
+    <ellipse class="o" cx="58" cy="47" rx="5" ry="4.2" fill="${C.fur}"/>
+    <ellipse class="o" cx="66" cy="45" rx="5" ry="4.2" fill="${C.furShade}"/>
+    ${head({ x: 76, y: 60, eye: 'closed', mouthKind: 'small', tilt: 68 })}
+    <g class="cat-zz"><text x="80" y="26" class="zz zz1">z</text><text x="87" y="15" class="zz zz2">Z</text></g>`;
 }
 
 /** Durum adına göre SVG içeriği. */
@@ -228,7 +292,10 @@ export function catSvg(state, { night = false } = {}) {
     case 'walk': inner = walkPose(); break;
     case 'aim': inner = aimPose(); break;
     case 'jump': inner = jumpPose(); break;
-    case 'sleep': inner = sleepPose(night); break;
+    case 'sleep': inner = sleepPose(false); break;
+    case 'sleepBlanket': inner = sleepPose(true); break;
+    case 'sleepBack': inner = sleepBackPose(); break;
+    case 'bake': inner = bakePose(); break;
     case 'stretch': inner = stretchPose(); break;
     case 'groom': inner = sitPose({
       eye: 'closed', mouthKind: 'tongue', tilt: -10,

@@ -206,6 +206,75 @@ html, body {
   to { transform: translateY(-2.2px); }
 }
 
+/* Bisküvi: patiler sırayla yoğurur, hamur ezilir, un uçuşur */
+.cat-knead-l, .cat-knead-r {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: knead 0.6s ease-in-out infinite;
+}
+.cat-knead-r { animation-delay: -0.3s; }
+@keyframes knead {
+  0%, 100% { transform: translateY(-3px); }
+  50% { transform: translateY(2px) scaleX(1.12); }
+}
+.st-bake .dough {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: squish 0.3s ease-in-out infinite alternate;
+}
+@keyframes squish {
+  from { transform: scale(1, 1); }
+  to { transform: scale(1.07, 0.88); }
+}
+.cat-svg .flour { opacity: 0; animation: flour 1.8s ease-out infinite; }
+.cat-svg .flour.f2 { animation-delay: 0.6s; }
+.cat-svg .flour.f3 { animation-delay: 1.2s; }
+@keyframes flour {
+  0% { opacity: 0; transform: translate(0, 4px); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(3px, -10px); }
+}
+
+/* Bilgisayar: üstünden küçük işaretler yükselir */
+.cat-svg .float-icon {
+  font: 800 9px 'Nunito', system-ui, sans-serif;
+  fill: #307e6f;
+  opacity: 0;
+  animation: floatIcon 3s ease-out infinite;
+}
+.cat-svg .float-icon.fi2 { fill: #b03a6a; animation-delay: 1s; }
+.cat-svg .float-icon.fi3 { animation-delay: 2s; }
+@keyframes floatIcon {
+  0% { opacity: 0; transform: translate(0, 6px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(2px, -14px); }
+}
+
+/* Sırt üstü uykuda arka pati ara ara seğirir */
+.cat-twitch {
+  transform-box: view-box;
+  transform-origin: 28px 54px;
+  animation: twitch 4.5s ease-in-out infinite;
+}
+@keyframes twitch {
+  0%, 86%, 100% { transform: rotate(0deg); }
+  90% { transform: rotate(-9deg); }
+  94% { transform: rotate(4deg); }
+}
+
+/* Yemek kırıntıları */
+.cat-svg .cat-crumb { animation: crumb 0.9s ease-in-out infinite alternate; }
+@keyframes crumb {
+  from { opacity: 0.2; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(2px); }
+}
+
+.st-bake .cat-tail,
+.st-eat .cat-tail {
+  transform-origin: 32px 72px;
+  animation: tailSway 2s ease-in-out infinite alternate;
+}
+
 /* Mama yerken baş sallama */
 .st-eat .cat-nom {
   transform-box: view-box;

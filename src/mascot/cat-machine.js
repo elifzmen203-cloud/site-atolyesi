@@ -8,20 +8,29 @@ export const CAT_STATES = [
   'sleep',
   'stretch',
   'laptop',
-  'eat'
+  'eat',
+  'bake',
+  'sleepBack',
+  'sleepBlanket'
 ];
 
+/** Uyku pozları (loaf, sırt üstü, battaniye altı). */
+export const SLEEP_STATES = ['sleep', 'sleepBack', 'sleepBlanket'];
+
 export const VALID_TRANSITIONS = {
-  sit: ['walk', 'groom', 'purr', 'sleep', 'aim', 'laptop', 'eat', 'jump', 'stretch'],
+  sit: ['walk', 'groom', 'purr', 'sleep', 'sleepBack', 'sleepBlanket', 'aim', 'laptop', 'eat', 'bake', 'jump', 'stretch'],
   walk: ['sit', 'groom', 'aim', 'jump'],
   groom: ['sit', 'purr'],
-  purr: ['sit', 'sleep'],
+  purr: ['sit', 'sleep', 'sleepBack', 'sleepBlanket'],
   aim: ['jump', 'sit'],
   jump: ['sit'],
   sleep: ['stretch', 'sit'],
+  sleepBack: ['stretch', 'sit'],
+  sleepBlanket: ['stretch', 'sit'],
   stretch: ['sit', 'walk'],
   laptop: ['sit'],
-  eat: ['sit', 'purr', 'groom']
+  eat: ['sit', 'purr', 'groom'],
+  bake: ['sit', 'purr', 'eat']
 };
 
 /**

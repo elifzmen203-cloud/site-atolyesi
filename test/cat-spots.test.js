@@ -26,6 +26,10 @@ test('cat-art: every cat state renders an SVG (night sleep has a blanket)', () =
     const svg = catSvg(state);
     assert.ok(svg.startsWith('<svg') && svg.endsWith('</svg>'), `${state} renders svg`);
   }
-  assert.ok(catSvg('sleep', { night: true }).includes('#c1bfd5'), 'night sleep uses the lilac blanket');
+  assert.ok(catSvg('sleepBlanket').includes('#c1bfd5'), 'blanket sleep uses the lilac blanket');
+  assert.ok(catSvg('sleepBack').includes('cat-twitch'), 'back sleep has a twitching paw');
+  assert.ok(catSvg('bake').includes('cat-knead-l') && catSvg('bake').includes('cat-chefhat'), 'bake kneads with a chef hat');
+  assert.ok(catSvg('eat').includes('cat-milk'), 'eat has bowl and milk');
+  assert.ok(catSvg('laptop').includes('float-icon'), 'laptop shows floating work icons');
   assert.ok(catSvg('walk').includes('leg-hl') && catSvg('walk').includes('leg-fr'), 'walk has 4 animated legs');
 });

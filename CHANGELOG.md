@@ -1,5 +1,9 @@
 # Değişiklik kaydı
 
+## 2026-10-01 · Tatlım'a yeni etkinlikler (Claude, Elif isteği)
+- **Yeni pozlar:** sırt üstü uyku (seğiren pati), gündüz de battaniye altında şekerleme, aşçı şapkasıyla bisküvi yoğurma (hamur ezilir, un uçuşur, oklava), mama + pipetli süt, laptopun arkasında yazma (`</>`, ♥ ve ✓ işaretleri yükselir).
+- **Davranış:** Gece çoğunlukla battaniye altında, bazen sırt üstü uyuyor. Etkinlikler (bisküvi 6,5 sn, laptop 6 sn, yemek 5 sn) karar döngüsü tarafından bölünmüyor.
+
 ## 2026-10-01 · Elif'in paleti ve yeni Tatlım (Claude, Elif isteği)
 - **Palet:** Arayüz rengi Elif'in seçtiği 36'lık pastel paletten geliyor.
   - Zemin, dolgu ve kartlar pastel; `--soft-*` değişkenleri eklendi.

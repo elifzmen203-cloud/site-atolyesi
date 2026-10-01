@@ -1,5 +1,5 @@
 import { t, onLangChange } from '../i18n/index.js';
-import { createCatMachine } from './cat-machine.js';
+import { createCatMachine, SLEEP_STATES } from './cat-machine.js';
 import { onDayNightChange, getCurrentMode } from '../theme/daynight.js';
 import { catSvg } from './cat-art.js';
 import { scanSpots, nearestSpot, isFree } from './spots.js';
@@ -17,6 +17,10 @@ import '../styles/cat.css';
 let initialized = false;
 const rand = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const isSleeping = st => SLEEP_STATES.includes(st);
+// Gece çoğunlukla battaniye altında, bazen sırt üstü; gündüz şekerlemesi üç türden biri.
+const nightSleep = () => (Math.random() < 0.75 ? 'sleepBlanket' : 'sleepBack');
+const napSleep = () => pick(SLEEP_STATES);
 
 export function initMascot() {
   if (typeof document === 'undefined' || initialized) return;
@@ -67,6 +71,7 @@ export function initMascot() {
   let actId = 0;                    // eski zamanlayıcıların yeni hareketi bozmasını önler
   let timer = null;
   let typingUntil = 0;
+  let activityUntil = 0;            // bisküvi/yemek/laptop gibi etkinlik bitene kadar karar döngüsü bölmez
   let lastPounce = 0;
 
   function render() {
@@ -88,6 +93,7 @@ export function initMascot() {
 
   function temp(state, ms) {
     setState(state);
+    activityUntil = Date.now() + ms;
     const id = ++actId;
     setTimeout(() => {
       if (id === actId && machine.getState() === state) setState('sit');
@@ -109,6 +115,8 @@ export function initMascot() {
   machine.onStateChange(state => {
     drawPose(state);
     if (state === 'purr') say(`${t('mascot.purr')} ♪`);
+    else if (state === 'bake') say('🍪', 1800);
+    else if (state === 'eat') say('😋', 1600);
   });
 
   // ---------- konum yardımcıları ----------
@@ -135,6 +143,7 @@ export function initMascot() {
     if (anim) cancelAnimationFrame(anim);
     anim = null;
     busy = false;
+    activityUntil = 0;
   }
 
   function walkTo(x, done) {
@@ -252,10 +261,10 @@ export function initMascot() {
       return;
     }
     if (sleepy) {
-      setState('sleep');
+      if (!isSleeping(st)) setState(manualSleep ? napSleep() : nightSleep());
       return schedule(8000);
     }
-    if (st === 'sleep') {          // gündüz şekerlemesi kısa sürer
+    if (isSleeping(st)) {          // gündüz şekerlemesi kısa sürer
       if (Math.random() < 0.3) temp('stretch', 1300);
       return schedule(6000);
     }
@@ -267,28 +276,33 @@ export function initMascot() {
       setState('laptop');
       return schedule(1500);
     }
+    if (Date.now() < activityUntil) return schedule(activityUntil - Date.now() + 200);
     if (st === 'laptop') setState('sit');
 
     const r = Math.random();
-    if (r < 0.32) {                // aynı rafta gezin
+    if (r < 0.28) {                // aynı rafta gezin
       const run = runAtPos(freeSpots());
       if (run && run.x2 - run.x1 > 40) {
         walkTo(rand(run.x1, run.x2), () => schedule(rand(2000, 4500)));
         return;
       }
       if (relocate(() => schedule(rand(2500, 5000)))) return;
-    } else if (r < 0.52) {         // başka bir rafa zıpla
+    } else if (r < 0.44) {         // başka bir rafa zıpla
       if (relocate(() => schedule(rand(2500, 5000)))) return;
-    } else if (r < 0.64) {
+    } else if (r < 0.53) {
       temp('groom', 3200);
-    } else if (r < 0.74) {
+    } else if (r < 0.60) {
       temp('purr', 2600);
-    } else if (r < 0.80) {
-      temp('eat', 3600);
+    } else if (r < 0.68) {
+      temp('eat', 5000);           // mama + süt
+    } else if (r < 0.77) {
+      temp('bake', 6500);          // bisküvi yoğurma
     } else if (r < 0.85) {
+      temp('laptop', 6000);        // bilgisayarda bir şeyler yapar
+    } else if (r < 0.89) {
       temp('stretch', 1400);
-    } else if (r < 0.88) {
-      setState('sleep');           // kısa şekerleme; yukarıdaki dal uyandırır
+    } else if (r < 0.94) {
+      setState(napSleep());        // kısa şekerleme (loaf, sırt üstü ya da battaniye); yukarıdaki dal uyandırır
     } else {
       setState('sit');
     }
@@ -378,7 +392,7 @@ export function initMascot() {
     }
     cancelAnim();
     actId++;
-    if (manualSleep) setState('sleep');
+    if (manualSleep) setState(napSleep());
     else temp('stretch', 1300);
     updateToggle();
     schedule(1600);
@@ -388,8 +402,7 @@ export function initMascot() {
     cancelAnim();
     actId++;
     if (mode === 'night') {
-      setState('sleep');
-      drawPose('sleep');   // battaniyeli gece uykusu
+      setState(nightSleep());   // gece: çoğunlukla battaniye altında
     } else if (!manualSleep) {
       temp('stretch', 1500);
     }
@@ -408,8 +421,9 @@ export function initMascot() {
 
   // ---------- başlangıç ----------
   updateToggle();
-  drawPose(manualSleep || isNight() ? 'sleep' : 'sit');
-  if (manualSleep || isNight()) setState('sleep');
+  drawPose('sit');
+  if (isNight()) setState(nightSleep());
+  else if (manualSleep) setState(napSleep());
   render();
   setTimeout(() => {
     if (!relocate(() => schedule(rand(2000, 4000)))) {
