@@ -4,6 +4,8 @@ import './styles/app.css';
 import { t, getLang, setLang, onLangChange, SUPPORTED_LANGS, applyI18n } from './i18n/index.js';
 import { renderHomePage } from './pages/home.js';
 import { renderToolsPage } from './pages/tools.js';
+import { renderWizardPage } from './pages/wizard.js';
+import { renderStudioPage } from './pages/studio.js';
 import { renderHowPage } from './pages/how.js';
 import { renderPrivacyPage } from './pages/privacy.js';
 import { initDayNightCycle } from './theme/daynight.js';
@@ -31,6 +33,8 @@ function renderHeader() {
 
       <nav class="nav-menu" aria-label="${t('nav.aria')}">
         <a href="#/" class="nav-link" data-route="#/" data-i18n="nav.generator">${t('nav.generator')}</a>
+        <a href="#/sihirbaz" class="nav-link" data-route="#/sihirbaz" data-i18n="nav.wizard">${t('nav.wizard')}</a>
+        <a href="#/atolye" class="nav-link" data-route="#/atolye" data-i18n="nav.studio">${t('nav.studio')}</a>
         <a href="#/araclar" class="nav-link" data-route="#/araclar" data-i18n="nav.tools">${t('nav.tools')}</a>
         <a href="#/nasil" class="nav-link" data-route="#/nasil" data-i18n="nav.how">${t('nav.how')}</a>
         <a href="#/gizlilik" class="nav-link" data-route="#/gizlilik" data-i18n="nav.privacy">${t('nav.privacy')}</a>
@@ -75,7 +79,11 @@ function routeTo() {
 
   mainContainer.innerHTML = '';
 
-  if (cleanRoute === '#/araclar') {
+  if (cleanRoute === '#/sihirbaz') {
+    mainContainer.appendChild(renderWizardPage());
+  } else if (cleanRoute === '#/atolye') {
+    mainContainer.appendChild(renderStudioPage());
+  } else if (cleanRoute === '#/araclar') {
     mainContainer.appendChild(renderToolsPage());
   } else if (cleanRoute === '#/nasil') {
     mainContainer.appendChild(renderHowPage());

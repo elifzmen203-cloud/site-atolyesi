@@ -89,3 +89,20 @@ test('palette-save: rollRandomPalette respects locked color roles', () => {
   assert.equal(rolled.primary, '#abcdef', 'Locked primary color must not change');
   assert.equal(rolled.bg, '#111111', 'Locked bg color must not change');
 });
+
+test('palette-save: sanitizes malicious HTML/script tags in imported palette names', () => {
+  const storage = createMockStorage();
+  const malicious = JSON.stringify([{
+    name: '<img src=x onerror=alert(1)>TestXSS',
+    palette: { bg: '#ffffff', ink: '#000000', primary: '#123456' }
+  }]);
+
+  const res = importPalettesJson(malicious, storage);
+  assert.equal(res.success, true);
+  const saved = getSavedPalettes(storage);
+  assert.equal(saved.length, 1);
+  assert.ok(!saved[0].name.includes('<img'));
+  assert.ok(!saved[0].name.includes('onerror'));
+  assert.equal(saved[0].name, 'TestXSS');
+});
+

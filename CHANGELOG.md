@@ -1,5 +1,30 @@
 # Değişiklik kaydı
 
+## 2026-10-01 · v2 Tur 4 (Antigravity) — Sihirbaz, Serbest Atölye, Küçük Animasyonlar ve Ara Denetim Düzeltmeleri
+- **Ara Denetim 3 Düzeltmeleri:**
+  - Renk seçici kasma düzeltmesi: `tools.js` içinde `input` olayında tam sekme yeniden çizimi kaldırıldı, sürüklerken yalnızca DOM swatch ve hex metin elemanları güncelleniyor; tam çizim yalnızca `change` olayında yapılıyor.
+  - XSS koruması: Palet adı `escapeHtml` ile kaçışlandı; JSON içe aktarımında HTML etiketleri (`<[^>]*>`) temizleniyor (`test/palette-save.test.js`).
+  - Okunurluk optimizasyonu: `.sky-transition` 60s katmanının z-index değeri 5'e çekildi, maksimum opaklığı 0.16–0.18 aralığına indirilerek 60 saniyelik gün doğumu/batımı renk geçişi sırasında sayfanın tüm içeriğinin kesintisiz okunabilirliği sağlandı.
+  - Düzeltilen metinler: "Uygula" butonu toast bildirimi `tools.appliedToGen` yapıldı; gömülü hata ve varsayılan palet metinleri `t()` ile TR/EN/RU/ES dil dosyalarına taşındı.
+  - 360 px uyumluluğu: `#cat-sleep-toggle` mobil ekranlar için responsive olarak ayarlandı.
+- **Sihirbaz (`#/sihirbaz` - v2-5):**
+  - 5 adımlı interaktif oluşturucu (İşletme Adı & Slogan > 10 Sektör Seçimi > Hazır Tema Seçimi > Bölüm Seçimi ve Varyantları > Canlı Önizleme ve İndir).
+  - İlerleme çubuğu, Geri/İleri butonları, klavye desteği (Enter / Arrow tuşları), Atölyeye doğrudan geçiş ve ZIP indirme.
+- **Serbest Atölye (`#/atolye` - v2-5):**
+  - Bölüm ekleme, silme ve yukarı/aşağı butonları veya sürükle-bırak (drag & drop) ile sıralama.
+  - Metin doğrudan düzenleme (başlık ve alt başlık/içerik).
+  - Bölüm varyantı seçimi (hero ortalı/sol; hizmetler kart/liste; galeri ızgara/kartlar).
+  - Bölüm zemin stili (varsayılan, açık kart, vurgulu).
+  - Anlık güncellenen çoklu cihaz canlı iframe önizlemesi (Masaüstü, Tablet, Mobil).
+- **Ortak Durum Yönetimi (`src/state/siteConfig.js`):**
+  - Sihirbaz ve Serbest Atölye arasında tam çift yönlü durum senkronizasyonu; taslak `localStorage`'a otomatik kaydedilir (`sa.v2Draft`); `test/siteconfig.test.js` ile test edildi.
+- **Küçük Animasyonlar & Konfeti (v2-6):**
+  - Buton basışlarında yumuşak yaylanma (`:active { transform: scale(0.96); }`), sayfalar arası geçişlerde yumuşak belirme animasyonu (`pageFadeIn`).
+  - ZIP hazır olunca sıfır bağımlılıklı canvas konfeti patlaması (`src/mascot/confetti.js`) ve kedi Tatlım'ın sevinç kutlaması ("🎉 mrr!").
+  - `prefers-reduced-motion` ile tüm animasyonların ve konfetinin erişilebilir şekilde kapatılması.
+- **Çeviri ve Test:**
+  - Tüm yeni özellikler TR, EN, RU, ES dillerinde eksiksiz eklendi; koda gömülü Türkçe karakter sıfır; `npm test` 29/29 geçti, `npm run build` 0 hata.
+
 ## 2026-10-01 · v2 Tur 2 (Antigravity) — Pastel tema, Gece/Gündüz, Kedi Tatlım, Palet Araçları
 - **Pastel Arayüz (v2-1):** Yumuşak krem zemin, şeftali, lavanta ve nane vurgu renkleri; yuvarlak Google Fonts Nunito tipografisi; büyük köşe yuvarlaklığı ve yumuşak gölgeler; `[data-mode="night"]` altında koyu pastel gece paleti; WCAG 2.1 AA (>= 4.5:1) tüm metin ve zemin çiftlerinde sağlandı (`src/color/contrast.js`, `test/contrast.test.js`).
 - **Gece / Gündüz Döngüsü (v2-2):** Yerel saate bağlı otomatik geçiş (08:00–19:59 gündüz, 20:00–07:59 gece); elle seçim butonu kaldırıldı/yok; 60 saniyelik gökyüzü renk geçişi animasyonu (`TRANSITION_DURATION = 60000`, gündoğumu/günbatımı); non-blocking katman (`pointer-events: none`); prefers-reduced-motion desteği; zamanlayıcı ve dinleyiciler `initApp()` içinde tek seferlik kuruldu (`src/theme/daynight.js`, `test/daynight.test.js`).

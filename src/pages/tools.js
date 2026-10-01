@@ -13,6 +13,7 @@ import {
   importPalettesJson
 } from '../color/palette-manager.js';
 import { ensureWcagAa } from '../color/contrast.js';
+import { escapeHtml } from '../generator/build-site.js';
 
 export function renderToolsPage() {
   const container = document.createElement('div');
@@ -242,7 +243,7 @@ export function renderToolsPage() {
                 ${savedList.map(item => `
                   <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1rem; background: var(--bg); display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
                     <div>
-                      <div style="font-weight: 700; margin-bottom: 0.5rem;">${item.name}</div>
+                      <div style="font-weight: 700; margin-bottom: 0.5rem;">${escapeHtml(item.name)}</div>
                       <div style="display: flex; height: 28px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border);">
                         <div style="flex:1; background:${item.palette.bg};" title="bg"></div>
                         <div style="flex:1; background:${item.palette.ink};" title="ink"></div>
@@ -443,6 +444,11 @@ export function renderToolsPage() {
       picker?.addEventListener('input', (e) => {
         baseColor = e.target.value;
         if (input) input.value = baseColor;
+      });
+
+      picker?.addEventListener('change', (e) => {
+        baseColor = e.target.value;
+        if (input) input.value = baseColor;
         syncPaletteFromBase();
         renderContent();
       });
@@ -463,11 +469,24 @@ export function renderToolsPage() {
         renderContent();
       });
 
-      // Individual color pickers
+      // Individual color pickers: update swatch DOM on input, re-render only on change
       container.querySelectorAll('.swatch-role-picker').forEach(el => {
         el.addEventListener('input', (e) => {
           const role = el.getAttribute('data-role');
           activePalette[role] = e.target.value;
+          const card = el.closest('.swatch-card');
+          if (card) {
+            const colorBox = card.querySelector('.swatch-color');
+            if (colorBox) {
+              colorBox.style.backgroundColor = e.target.value;
+              colorBox.textContent = e.target.value;
+            }
+            const hexSpan = card.querySelector('.swatch-hex');
+            if (hexSpan) hexSpan.textContent = e.target.value;
+          }
+        });
+
+        el.addEventListener('change', () => {
           renderContent();
         });
       });
@@ -509,7 +528,7 @@ export function renderToolsPage() {
       // Apply to Generator
       container.querySelector('#btn-apply-palette-gen')?.addEventListener('click', () => {
         sessionStorage.setItem('sa.customPalette', JSON.stringify(activePalette));
-        showToast(t('gen.buildBtn'));
+        showToast(t('tools.appliedToGen'));
         window.location.hash = '#/';
       });
 
@@ -517,12 +536,14 @@ export function renderToolsPage() {
       container.querySelector('#btn-save-current-palette')?.addEventListener('click', () => {
         const nameInput = container.querySelector('#save-palette-name-input');
         const name = nameInput ? nameInput.value : '';
-        const res = savePalette(name, activePalette);
+        const defaultName = t('tools.palette.defaultName');
+        const res = savePalette(name, activePalette, localStorage, defaultName);
         if (res.success) {
           showToast(t('common.copied'));
           renderContent();
         } else {
-          showToast(res.error);
+          const errMsg = res.errorCode === 'limitReached' ? t('tools.palette.limitReached') : res.error;
+          showToast(errMsg);
         }
       });
 
@@ -568,7 +589,8 @@ export function renderToolsPage() {
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (event) => {
-          const res = importPalettesJson(event.target.result);
+          const defaultImportName = t('tools.palette.importedName');
+          const res = importPalettesJson(event.target.result, localStorage, defaultImportName);
           if (res.success) {
             showToast(t('tools.palette.importSuccess'));
             renderContent();

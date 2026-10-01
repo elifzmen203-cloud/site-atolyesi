@@ -65,7 +65,7 @@ export function initMascot() {
   // Toggle button (bottom left)
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'cat-sleep-toggle';
-  toggleBtn.className = 'btn btn-outline btn-sm';
+  toggleBtn.className = 'btn btn-outline btn-sm cat-sleep-toggle-btn';
   toggleBtn.style.cssText = 'position: fixed; bottom: 12px; left: 12px; z-index: 850; pointer-events: auto; font-size: 11px; padding: 4px 8px; border-radius: 20px; background: var(--surface); opacity: 0.85; box-shadow: 0 2px 6px rgba(0,0,0,0.06);';
   
   function updateToggleBtnText() {
@@ -246,7 +246,20 @@ export function initMascot() {
     }
   });
 
+  // Celebrate event (ZIP ready / site completed)
+  window.addEventListener('site:celebrate', () => {
+    if (isManuallyAsleep) return;
+    machine.setState('purr');
+    showBubble(`🎉 ${t('mascot.purr')}`, 3000);
+    catEl.style.transform = 'scale(1.15) translateY(-8px)';
+    setTimeout(() => {
+      catEl.style.transform = 'none';
+      setTimeout(() => machine.setState('sit'), 2000);
+    }, 1000);
+  });
+
   onLangChange(() => {
     updateToggleBtnText();
   });
 }
+
