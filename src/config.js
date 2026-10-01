@@ -15,6 +15,6 @@ export const SITE_CONFIG = {
   adSlots: { top: '', bottom: '' },
 
   // "Bana kahve ısmarla" sayfasının adresi (Buy Me a Coffee, Patreon vb.). Boşken buton görünmez.
-  donateUrl: '',
+  donateUrl: 'https://buymeacoffee.com/elifzmen20t',
   donateUsd: 1
 };
