@@ -6,6 +6,28 @@
   top: 0;
   z-index: 50;
 }
+/* Başlığın altında paletten ince pastel şerit */
+.app-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--soft-mint), var(--soft-aqua), var(--soft-lilac), var(--soft-pink), var(--soft-peach), var(--soft-butter), var(--soft-pistachio));
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Sayfa arka planında yumuşak pastel benekler (dekoratif, tıklamayı etkilemez) */
+body {
+  background-image:
+    radial-gradient(circle at 8% 18%, color-mix(in srgb, var(--soft-pink) 55%, transparent) 0, transparent 22%),
+    radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--soft-mint) 55%, transparent) 0, transparent 20%),
+    radial-gradient(circle at 85% 85%, color-mix(in srgb, var(--soft-butter) 60%, transparent) 0, transparent 24%),
+    radial-gradient(circle at 12% 90%, color-mix(in srgb, var(--soft-lilac) 45%, transparent) 0, transparent 22%);
+  background-attachment: fixed;
+}
 .app-header-inner {
   display: flex;
   align-items: center;
@@ -28,9 +50,9 @@
   justify-content: center;
   width: 34px;
   height: 34px;
-  background: var(--primary);
-  color: #ffffff;
-  border-radius: 8px;
+  background: var(--primary-fill);
+  color: var(--primary-ink);
+  border-radius: 12px;
   font-size: 1.1rem;
 }
 
@@ -44,13 +66,16 @@
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
-  padding: 0.4rem 0.5rem;
-  border-radius: 6px;
-  transition: color 0.15s ease;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 .nav-link:hover, .nav-link.active {
   color: var(--primary);
-  background: rgba(59, 91, 219, 0.06);
+  background: var(--soft-mint);
+}
+[data-mode="night"] .nav-link:hover, [data-mode="night"] .nav-link.active {
+  background: var(--soft-mint);
 }
 
 .header-actions {
@@ -176,8 +201,8 @@
 }
 
 .iframe-wrapper {
-  background: #2d3139;
-  border-radius: 8px;
+  background: var(--soft-lilac);
+  border-radius: 14px;
   padding: 8px;
   display: flex;
   justify-content: center;
@@ -253,12 +278,12 @@
   margin-top: 0.5rem;
 }
 .contrast-badge.pass {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--soft-mint);
+  color: var(--ink);
 }
 .contrast-badge.fail {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--soft-rose);
+  color: var(--ink);
 }
 
 /* Font Pairing Cards */

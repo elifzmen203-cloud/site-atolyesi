@@ -1,0 +1,249 @@
+/* Tatlım: belge koordinatında dolaşan kedi katmanı. Tıklamayı asla yutmaz. */
+html, body {
+  overflow-x: clip; /* kenardan içeri zıplarken yatay kaydırma çubuğu çıkmasın */
+}
+
+#cat-mascot-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 40; /* içeriğin üstünde, yapışkan başlığın (50) altında */
+  pointer-events: none;
+}
+
+.cat-entity {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cat-art {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+
+.cat-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 100%;
+}
+
+.cat-svg .o {
+  stroke: #5b4137;
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.cat-svg .o-thin {
+  fill: none;
+  stroke: #5b4137;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.cat-svg .o-whisker {
+  fill: none;
+  stroke: #5b4137;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.cat-svg .stripe,
+.cat-svg .stripe-thick {
+  fill: none;
+  stroke: #e3a983;
+  stroke-linecap: round;
+}
+.cat-svg .stripe { stroke-width: 2.2; }
+.cat-svg .stripe-thick { stroke-width: 3.2; }
+.cat-svg .cat-bell {
+  stroke: #5b4137;
+  stroke-width: 1.5;
+}
+.cat-svg .zz {
+  font: 800 12px 'Nunito', system-ui, sans-serif;
+  fill: #5b4137;
+}
+
+/* Konuşma baloncuğu (yansımaz: .cat-art'ın kardeşi) */
+.cat-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translate(-50%, 4px);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(74, 58, 51, 0.1);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.cat-bubble.show {
+  opacity: 1;
+  transform: translate(-50%, -2px);
+}
+
+/* ---- Yürüyüş: sol arka → sol ön → sağ arka → sağ ön (çeyrek faz farkı) ---- */
+.cat-leg {
+  transform-box: fill-box;
+  transform-origin: 50% 8%;
+}
+.st-walk .cat-leg { animation: catLeg 0.72s ease-in-out infinite; }
+.st-walk .leg-hl { animation-delay: 0s; }
+.st-walk .leg-fl { animation-delay: -0.18s; }
+.st-walk .leg-hr { animation-delay: -0.36s; }
+.st-walk .leg-fr { animation-delay: -0.54s; }
+@keyframes catLeg {
+  0%, 100% { transform: rotate(-22deg); }
+  50% { transform: rotate(22deg); }
+}
+.st-walk .cat-bob { animation: catBob 0.36s ease-in-out infinite alternate; }
+@keyframes catBob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1.6px); }
+}
+
+/* Kuyruk */
+.cat-tail { transform-box: view-box; }
+.st-walk .cat-tail-walk {
+  transform-origin: 20px 46px;
+  animation: tailSway 1.4s ease-in-out infinite alternate;
+}
+.st-sit .cat-tail,
+.st-purr .cat-tail,
+.st-laptop .cat-tail {
+  transform-origin: 32px 72px;
+  animation: tailSway 2.6s ease-in-out infinite alternate;
+}
+@keyframes tailSway {
+  from { transform: rotate(-7deg); }
+  to { transform: rotate(7deg); }
+}
+
+/* Göz kırpma */
+.cat-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5.5s infinite;
+}
+@keyframes blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.1); }
+}
+
+/* Nişan: popo sallama ve kuyruk ucu seğirmesi */
+.st-aim .cat-rear {
+  transform-box: view-box;
+  transform-origin: 30px 72px;
+  animation: wiggle 0.16s ease-in-out infinite alternate;
+}
+@keyframes wiggle {
+  from { transform: translateX(-1.6px) rotate(-2deg); }
+  to { transform: translateX(1.6px) rotate(2deg); }
+}
+.st-aim .cat-tail-twitch {
+  transform-origin: 18px 62px;
+  animation: tailSway 0.3s ease-in-out infinite alternate;
+}
+
+/* Patisini yalama */
+.st-groom .cat-lick-paw {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lick 0.5s ease-in-out infinite alternate;
+}
+@keyframes lick {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-3px, -4px); }
+}
+
+/* Mırlama: hafif titreşim */
+.st-purr .cat-svg { animation: purr 0.09s linear infinite alternate; }
+@keyframes purr {
+  from { transform: translateX(-0.4px); }
+  to { transform: translateX(0.4px); }
+}
+
+/* Uyku: nefes ve süzülen Zz */
+.cat-breathe {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: breathe 2.8s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.05); }
+}
+.cat-svg .zz { animation: floatZ 2.6s ease-in-out infinite; opacity: 0; }
+.cat-svg .zz2 { animation-delay: 1.3s; }
+@keyframes floatZ {
+  0% { opacity: 0; transform: translate(0, 4px); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(4px, -10px); }
+}
+
+/* Laptopta "çalışma": patiler sırayla tuşlara vurur */
+.cat-tap-l, .cat-tap-r {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tap 0.28s ease-in-out infinite alternate;
+}
+.cat-tap-r { animation-delay: -0.14s; }
+@keyframes tap {
+  from { transform: translateY(0); }
+  to { transform: translateY(-2.2px); }
+}
+
+/* Mama yerken baş sallama */
+.st-eat .cat-nom {
+  transform-box: view-box;
+  transform-origin: 50px 55px;
+  animation: nom 0.45s ease-in-out infinite alternate;
+}
+@keyframes nom {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(6deg); }
+}
+
+/* İniş ve sevinç zıplaması */
+.cat-land .cat-svg { animation: land 0.26s ease-out; }
+@keyframes land {
+  0% { transform: scale(1.12, 0.86); }
+  100% { transform: none; }
+}
+.cat-hop .cat-svg { animation: hop 0.5s ease-out 2; }
+@keyframes hop {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-14px) scale(1.04); }
+}
+
+/* Uyut / uyandır düğmesi */
+.cat-sleep-toggle-btn {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 850;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  opacity: 0.9;
+  box-shadow: 0 2px 6px rgba(74, 58, 51, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-svg, .cat-svg * { animation: none !important; }
+  .cat-svg .zz { opacity: 1; }
+}

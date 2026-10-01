@@ -2,28 +2,39 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { contrastRatio, isWcagAa, isWcagAaa, ensureWcagAa } from '../src/color/contrast.js';
 
-export const APP_THEMES = {
-  day: {
-    bg: '#fdfbf7',
-    surface: '#ffffff',
-    ink: '#292524',
-    muted: '#57534e',
-    primary: '#4f46e5',
-    primaryInk: '#ffffff',
-    accent: '#c2410c',
-    border: '#e7e5e4'
-  },
-  night: {
-    bg: '#18181b',
-    surface: '#27272a',
-    ink: '#fafaf9',
-    muted: '#a8a29e',
-    primary: '#818cf8',
-    primaryInk: '#18181b',
-    accent: '#fb923c',
-    border: '#3f3f46'
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Tema değerleri doğrudan base.css'ten okunur; CSS değişirse test de onu denetler.
+const css = fs.readFileSync(
+  path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../src/styles/base.css'), 'utf-8');
+function readVars(selector) {
+  const start = css.indexOf(`${selector} {`);
+  const block = css.slice(start, css.indexOf('}', start));
+  const vars = {};
+  for (const m of block.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})/g)) vars[m[1]] = m[2];
+  return vars;
+}
+function theme(v) {
+  return {
+    bg: v.bg, surface: v.surface, ink: v.ink, muted: v.muted,
+    primary: v['primary-fill'], primaryInk: v['primary-ink'], link: v.primary, accent: v.accent,
+    soft: Object.entries(v).filter(([k]) => k.startsWith('soft-')).map(([, hex]) => hex)
+  };
+}
+export const APP_THEMES = { day: theme(readVars(':root')), night: theme(readVars('[data-mode="night"]')) };
+
+test('contrast: theme links and text on pastel surfaces pass WCAG AA', () => {
+  for (const [name, t] of Object.entries(APP_THEMES)) {
+    assert.ok(t.soft.length >= 8, `${name}: pastel soft-* tokens exist`);
+    assert.ok(isWcagAa(t.link, t.bg), `${name} link/bg ${contrastRatio(t.link, t.bg)} must be >= 4.5`);
+    assert.ok(isWcagAa(t.link, t.surface), `${name} link/surface ${contrastRatio(t.link, t.surface)} must be >= 4.5`);
+    for (const soft of t.soft) {
+      assert.ok(isWcagAa(t.ink, soft), `${name} ink on ${soft}: ${contrastRatio(t.ink, soft)} must be >= 4.5`);
+    }
   }
-};
+});
 
 test('contrast: day theme text/background pairs pass WCAG AA >= 4.5:1', () => {
   const t = APP_THEMES.day;

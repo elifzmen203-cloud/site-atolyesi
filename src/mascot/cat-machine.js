@@ -6,18 +6,22 @@ export const CAT_STATES = [
   'aim',
   'jump',
   'sleep',
-  'stretch'
+  'stretch',
+  'laptop',
+  'eat'
 ];
 
 export const VALID_TRANSITIONS = {
-  sit: ['walk', 'groom', 'purr', 'sleep', 'aim'],
-  walk: ['sit', 'groom', 'aim'],
+  sit: ['walk', 'groom', 'purr', 'sleep', 'aim', 'laptop', 'eat', 'jump', 'stretch'],
+  walk: ['sit', 'groom', 'aim', 'jump'],
   groom: ['sit', 'purr'],
   purr: ['sit', 'sleep'],
   aim: ['jump', 'sit'],
   jump: ['sit'],
   sleep: ['stretch', 'sit'],
-  stretch: ['sit', 'walk']
+  stretch: ['sit', 'walk'],
+  laptop: ['sit'],
+  eat: ['sit', 'purr', 'groom']
 };
 
 /**

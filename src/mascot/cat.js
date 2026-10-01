@@ -1,274 +1,420 @@
 import { t, onLangChange } from '../i18n/index.js';
 import { createCatMachine } from './cat-machine.js';
 import { onDayNightChange, getCurrentMode } from '../theme/daynight.js';
+import { catSvg } from './cat-art.js';
+import { scanSpots, nearestSpot, isFree } from './spots.js';
+import '../styles/cat.css';
+
+/**
+ * Tatlım: sayfanın her yerinde, kartların ve panellerin üst kenarlarında dolaşan kedi.
+ *
+ * - Konum belge koordinatındadır (sayfa kayınca bulunduğu kartla birlikte kayar).
+ * - Yalnız `spots.js`'in "boş" bulduğu yerlere yürür/zıplar; yazıyı, butonu, alanları kapatmaz.
+ * - Tıklamayı asla yutmaz (pointer-events: none); sekme gizliyken durur; hareket azaltma tercihine uyar.
+ * - Yürüme ve zıplama rAF ile, karar döngüsü seyrek setTimeout ile çalışır (ana iş parçacığını kasmaz).
+ */
 
 let initialized = false;
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
 export function initMascot() {
   if (typeof document === 'undefined' || initialized) return;
   initialized = true;
 
   const STORAGE_KEY = 'sa.catSleep';
-  let isManuallyAsleep = false;
+  let manualSleep = false;
   try {
-    isManuallyAsleep = localStorage.getItem(STORAGE_KEY) === 'true';
+    manualSleep = localStorage.getItem(STORAGE_KEY) === 'true';
   } catch (e) {
-    // Ignore storage issues
+    // Depolama kapalıysa varsayılan: uyanık
   }
 
-  const machine = createCatMachine({
-    initialState: isManuallyAsleep || getCurrentMode() === 'night' ? 'sleep' : 'sit'
-  });
+  const reduced = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const isNight = () => getCurrentMode() === 'night';
+  const size = () => (window.innerWidth < 600 ? { w: 62, h: 50 } : { w: 86, h: 69 });
 
-  // Create UI Container
-  const wrapper = document.createElement('div');
-  wrapper.id = 'cat-mascot-wrapper';
-  wrapper.setAttribute('aria-hidden', 'true');
-  wrapper.style.cssText = 'position: fixed; inset: 0; pointer-events: none; z-index: 800; overflow: hidden;';
+  const machine = createCatMachine({ initialState: 'sit' });
 
-  const catEl = document.createElement('div');
-  catEl.id = 'tatlim-cat';
-  catEl.className = 'cat-entity state-sit';
-  catEl.style.cssText = 'position: absolute; bottom: 16px; left: 60px; width: 64px; height: 64px; pointer-events: none; transition: transform 0.3s ease, left 0.6s ease, bottom 0.6s ease;';
+  // ---------- DOM ----------
+  const layer = document.createElement('div');
+  layer.id = 'cat-mascot-wrapper';
+  layer.setAttribute('aria-hidden', 'true');
 
-  catEl.innerHTML = `
-    <div class="cat-bubble" style="position: absolute; top: -28px; left: 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 12px; padding: 2px 8px; font-size: 11px; font-weight: 700; opacity: 0; transition: opacity 0.2s ease; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.08);"></div>
-    <svg viewBox="0 0 64 64" width="64" height="64" class="cat-svg">
-      <!-- Tail -->
-      <path class="cat-tail" d="M16 48 C 8 46, 4 36, 10 30 C 12 28, 16 32, 14 36" fill="none" stroke="#fbbf24" stroke-width="4.5" stroke-linecap="round" />
-      <!-- Body -->
-      <ellipse class="cat-body" cx="30" cy="44" rx="16" ry="12" fill="#f59e0b" />
-      <!-- Paws -->
-      <circle class="cat-paw-l" cx="22" cy="54" r="4" fill="#fbbf24" />
-      <circle class="cat-paw-r" cx="36" cy="54" r="4" fill="#fbbf24" />
-      <!-- Head -->
-      <circle class="cat-head" cx="38" cy="30" r="13" fill="#f59e0b" />
-      <!-- Ears -->
-      <polygon class="cat-ear-l" points="28,24 33,14 36,22" fill="#d97706" />
-      <polygon class="cat-ear-r" points="40,22 43,14 48,24" fill="#d97706" />
-      <!-- Eyes Open -->
-      <ellipse class="cat-eye-l" cx="35" cy="28" rx="2" ry="2.5" fill="#1f2937" />
-      <ellipse class="cat-eye-r" cx="43" cy="28" rx="2" ry="2.5" fill="#1f2937" />
-      <!-- Eyes Closed (Hidden by default) -->
-      <path class="cat-eye-sleep-l" d="M33 29 Q 35 32 37 29" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" style="display: none;" />
-      <path class="cat-eye-sleep-r" d="M41 29 Q 43 32 45 29" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" style="display: none;" />
-      <!-- Nose & Mouth -->
-      <polygon points="38,32 40,32 39,33.5" fill="#ef4444" />
-      <!-- Whiskers -->
-      <line x1="28" y1="31" x2="22" y2="30" stroke="#78350f" stroke-width="1" />
-      <line x1="28" y1="33" x2="22" y2="34" stroke="#78350f" stroke-width="1" />
-      <line x1="48" y1="31" x2="54" y2="30" stroke="#78350f" stroke-width="1" />
-      <line x1="48" y1="33" x2="54" y2="34" stroke="#78350f" stroke-width="1" />
-    </svg>
-  `;
+  const cat = document.createElement('div');
+  cat.id = 'tatlim-cat';
+  cat.className = 'cat-entity st-sit';
 
-  // Toggle button (bottom left)
+  const bubble = document.createElement('div');
+  bubble.className = 'cat-bubble';
+  const art = document.createElement('div');
+  art.className = 'cat-art';
+  cat.append(bubble, art);
+  layer.append(cat);
+
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'cat-sleep-toggle';
+  toggleBtn.type = 'button';
   toggleBtn.className = 'btn btn-outline btn-sm cat-sleep-toggle-btn';
-  toggleBtn.style.cssText = 'position: fixed; bottom: 12px; left: 12px; z-index: 850; pointer-events: auto; font-size: 11px; padding: 4px 8px; border-radius: 20px; background: var(--surface); opacity: 0.85; box-shadow: 0 2px 6px rgba(0,0,0,0.06);';
-  
-  function updateToggleBtnText() {
-    toggleBtn.textContent = machine.getState() === 'sleep' ? `🐱 ${t('mascot.wake')}` : `💤 ${t('mascot.sleep')}`;
+
+  document.body.append(layer, toggleBtn);
+
+  // ---------- durum ----------
+  let pos = { x: -200, y: -200 };   // x: merkez, y: zemin (belge koordinatı)
+  let facing = 1;
+  let busy = false;                 // yürüyor/zıplıyor
+  let anim = null;
+  let actId = 0;                    // eski zamanlayıcıların yeni hareketi bozmasını önler
+  let timer = null;
+  let typingUntil = 0;
+  let lastPounce = 0;
+
+  function render() {
+    const { w, h } = size();
+    cat.style.width = `${w}px`;
+    cat.style.height = `${h}px`;
+    cat.style.transform = `translate3d(${pos.x - w / 2}px, ${pos.y - h}px, 0)`;
+    art.style.transform = `scaleX(${facing})`;
   }
-  updateToggleBtnText();
 
-  toggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (machine.getState() === 'sleep') {
-      isManuallyAsleep = false;
-      try { localStorage.setItem(STORAGE_KEY, 'false'); } catch (err) {}
-      machine.setState('stretch');
-      setTimeout(() => machine.setState('sit'), 1200);
-    } else {
-      isManuallyAsleep = true;
-      try { localStorage.setItem(STORAGE_KEY, 'true'); } catch (err) {}
-      machine.setState('sleep');
-    }
-    updateToggleBtnText();
-  });
+  function drawPose(state) {
+    art.innerHTML = catSvg(state, { night: isNight() });
+    cat.className = `cat-entity st-${state}`;
+  }
 
-  wrapper.appendChild(catEl);
-  document.body.appendChild(wrapper);
-  document.body.appendChild(toggleBtn);
+  function setState(state) {
+    if (machine.getState() !== state) machine.setState(state);
+  }
 
-  // Bubble helper
-  const bubble = catEl.querySelector('.cat-bubble');
-  function showBubble(text, duration = 2500) {
-    if (!bubble) return;
-    bubble.textContent = text;
-    bubble.style.opacity = '1';
+  function temp(state, ms) {
+    setState(state);
+    const id = ++actId;
     setTimeout(() => {
-      bubble.style.opacity = '0';
-    }, duration);
+      if (id === actId && machine.getState() === state) setState('sit');
+    }, ms);
   }
 
-  // Eye toggle helper
-  const eyeOpenL = catEl.querySelector('.cat-eye-l');
-  const eyeOpenR = catEl.querySelector('.cat-eye-r');
-  const eyeSleepL = catEl.querySelector('.cat-eye-sleep-l');
-  const eyeSleepR = catEl.querySelector('.cat-eye-sleep-r');
-
-  function setEyesClosed(closed) {
-    if (closed) {
-      if (eyeOpenL) eyeOpenL.style.display = 'none';
-      if (eyeOpenR) eyeOpenR.style.display = 'none';
-      if (eyeSleepL) eyeSleepL.style.display = 'block';
-      if (eyeSleepR) eyeSleepR.style.display = 'block';
-    } else {
-      if (eyeOpenL) eyeOpenL.style.display = 'block';
-      if (eyeOpenR) eyeOpenR.style.display = 'block';
-      if (eyeSleepL) eyeSleepL.style.display = 'none';
-      if (eyeSleepR) eyeSleepR.style.display = 'none';
-    }
+  let bubbleTimer = null;
+  function say(text, ms = 2200) {
+    bubble.textContent = text;
+    bubble.classList.add('show');
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(() => bubble.classList.remove('show'), ms);
   }
 
-  // Positional coordinates
-  let posX = 80;
-  let posY = 16;
-  let lastJumpTime = 0;
-  let targetX = 80;
-  let targetY = 16;
+  function updateToggle() {
+    toggleBtn.textContent = manualSleep ? `🐱 ${t('mascot.wake')}` : `💤 ${t('mascot.sleep')}`;
+  }
 
-  // Track cursor position for playful jumps
-  let cursorX = 200;
-  let cursorY = 300;
-  let cursorIdleTimer = null;
-
-  window.addEventListener('mousemove', (e) => {
-    cursorX = e.clientX;
-    cursorY = window.innerHeight - e.clientY;
-
-    if (cursorIdleTimer) clearTimeout(cursorIdleTimer);
-    cursorIdleTimer = setTimeout(() => {
-      // If cursor has stayed still for 4 seconds, cat notices and may aim
-      const now = Date.now();
-      if (!isManuallyAsleep && machine.getState() === 'sit' && now - lastJumpTime > 25000) {
-        machine.transition('aim');
-      }
-    }, 4000);
-  }, { passive: true });
-
-  window.addEventListener('touchstart', (e) => {
-    if (e.touches && e.touches[0]) {
-      cursorX = e.touches[0].clientX;
-      cursorY = window.innerHeight - e.touches[0].clientY;
-      const now = Date.now();
-      if (!isManuallyAsleep && machine.getState() === 'sit' && now - lastJumpTime > 20000) {
-        machine.transition('aim');
-      }
-    }
-  }, { passive: true });
-
-  // Handle state animations
-  machine.onStateChange((state) => {
-    updateToggleBtnText();
-    catEl.className = `cat-entity state-${state}`;
-
-    if (state === 'sleep') {
-      setEyesClosed(true);
-      showBubble('Zzz...', 3000);
-    } else {
-      setEyesClosed(false);
-    }
-
-    if (state === 'purr') {
-      showBubble(t('mascot.purr'), 2200);
-    }
-
-    if (state === 'groom') {
-      catEl.style.transform = 'scale(1.05) rotate(-3deg)';
-      setTimeout(() => { catEl.style.transform = 'none'; }, 1000);
-    }
-
-    if (state === 'walk') {
-      const maxX = Math.max(120, window.innerWidth - 100);
-      posX = Math.max(40, Math.min(maxX, posX + (Math.random() > 0.5 ? 90 : -90)));
-      catEl.style.left = `${posX}px`;
-    }
-
-    if (state === 'aim') {
-      catEl.style.transform = 'scaleY(0.8) scaleX(1.1)';
-      setTimeout(() => {
-        if (machine.getState() === 'aim') {
-          machine.transition('jump');
-        }
-      }, 1400);
-    }
-
-    if (state === 'jump') {
-      lastJumpTime = Date.now();
-      const maxX = Math.max(120, window.innerWidth - 100);
-      const jumpDestX = Math.max(40, Math.min(maxX, cursorX - 32));
-      const jumpPeakY = Math.min(180, Math.max(70, cursorY));
-
-      // Jump trajectory
-      catEl.style.transition = 'left 0.5s ease-out, bottom 0.25s cubic-bezier(0,0,0.2,1)';
-      catEl.style.bottom = `${jumpPeakY}px`;
-      catEl.style.left = `${jumpDestX}px`;
-      catEl.style.transform = 'rotate(-10deg) scale(1.1)';
-
-      setTimeout(() => {
-        // Fall back down
-        catEl.style.transition = 'bottom 0.25s cubic-bezier(0.8,0,1,1), transform 0.2s ease';
-        catEl.style.bottom = '16px';
-        catEl.style.transform = 'none';
-        posX = jumpDestX;
-
-        setTimeout(() => {
-          catEl.style.transition = 'transform 0.3s ease, left 0.6s ease, bottom 0.6s ease';
-          machine.transition('sit');
-        }, 260);
-      }, 250);
-    }
+  machine.onStateChange(state => {
+    drawPose(state);
+    if (state === 'purr') say(`${t('mascot.purr')} ♪`);
   });
 
-  // Natural state tick loop
-  let tickInterval = setInterval(() => {
-    if (document.hidden || isManuallyAsleep) return;
-    const isReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (isReduced) return;
+  // ---------- konum yardımcıları ----------
+  const toDoc = s => ({ x1: s.x1, x2: s.x2, y: s.y + window.scrollY, floor: !!s.floor });
+  const freeSpots = () => {
+    const { w, h } = size();
+    return scanSpots(w, h).map(toDoc);
+  };
+  function inView() {
+    const { h } = size();
+    const vy = pos.y - window.scrollY;
+    return vy > h * 0.6 && vy < window.innerHeight + 2 && pos.x > 0 && pos.x < window.innerWidth;
+  }
+  function currentFree() {
+    const { w, h } = size();
+    return isFree(pos.x, pos.y - window.scrollY, w, h);
+  }
+  function runAtPos(spots) {
+    return spots.find(s => Math.abs(s.y - pos.y) < 3 && pos.x >= s.x1 - 2 && pos.x <= s.x2 + 2);
+  }
 
-    const st = machine.getState();
-    if (st === 'sleep') {
-      // Gündüz uykusu kısa bir şekerlemedir (her tikte %25 uyanma, ort. ~25 sn); gece sabaha kadar uyur.
-      // Önceden doğal döngü 'sleep'i atladığı için gündüz rastgele uyuyan kedi bir daha uyanmıyordu.
-      if (getCurrentMode() === 'day' && Math.random() < 0.25) {
-        machine.setState('stretch');
-        setTimeout(() => machine.setState('sit'), 1200);
+  // ---------- hareket ----------
+  function cancelAnim() {
+    if (anim) cancelAnimationFrame(anim);
+    anim = null;
+    busy = false;
+  }
+
+  function walkTo(x, done) {
+    cancelAnim();
+    actId++;
+    busy = true;
+    facing = x >= pos.x ? 1 : -1;
+    setState('walk');
+    const speed = window.innerWidth < 600 ? 48 : 68;
+    let last = performance.now();
+    const step = now => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const dx = x - pos.x;
+      if (Math.abs(dx) < 1.5) {
+        pos.x = x;
+        render();
+        anim = null;
+        busy = false;
+        setState('sit');
+        if (done) done();
+        return;
       }
+      pos.x += Math.sign(dx) * Math.min(Math.abs(dx), speed * dt);
+      render();
+      anim = requestAnimationFrame(step);
+    };
+    render();
+    anim = requestAnimationFrame(step);
+  }
+
+  function jumpTo(x, y, done) {
+    cancelAnim();
+    actId++;
+    busy = true;
+    const x0 = pos.x;
+    const y0 = pos.y;
+    facing = x >= x0 ? 1 : -1;
+    const dist = Math.hypot(x - x0, y - y0);
+    const dur = Math.min(900, 380 + dist * 0.9);
+    const apex = Math.min(y0, y) - Math.min(120, 40 + dist * 0.25);
+    const ctrl = 2 * apex - (y0 + y) / 2;   // ikinci dereceden Bezier: orta nokta = tepe
+    setState('jump');
+    const t0 = performance.now();
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur);
+      pos.x = x0 + (x - x0) * k;
+      pos.y = (1 - k) * (1 - k) * y0 + 2 * (1 - k) * k * ctrl + k * k * y;
+      render();
+      if (k < 1) {
+        anim = requestAnimationFrame(step);
+        return;
+      }
+      anim = null;
+      busy = false;
+      cat.classList.add('cat-land');
+      setTimeout(() => cat.classList.remove('cat-land'), 280);
+      setState('sit');
+      if (done) done();
+    };
+    render();
+    anim = requestAnimationFrame(step);
+  }
+
+  function goToSpot(target, done) {
+    const sameRun = inView() && Math.abs(target.y - pos.y) < 3 &&
+      target.run && pos.x >= target.run.x1 - 2 && pos.x <= target.run.x2 + 2;
+    if (sameRun) walkTo(target.x, done);
+    else if (!inView()) enterFromSide(target, done);
+    else jumpTo(target.x, target.y, done);
+  }
+
+  function enterFromSide(target, done) {
+    const { w } = size();
+    const fromLeft = target.x < window.innerWidth / 2;
+    pos = { x: fromLeft ? -w : window.innerWidth + w, y: target.y };
+    render();
+    jumpTo(target.x, target.y, done);
+  }
+
+  /** Rastgele ya da (px, py) yakınındaki boş bir yere git. Gidecek yer yoksa false. */
+  function relocate(done, px = null, py = null) {
+    const spots = freeSpots();
+    if (!spots.length) return false;
+    let target;
+    if (px !== null) {
+      target = nearestSpot(spots, px, py, 420);
+    } else {
+      const s = pick(spots);
+      target = { x: rand(s.x1, s.x2), y: s.y, run: s };
+    }
+    if (!target) return false;
+    goToSpot(target, done);
+    return true;
+  }
+
+  // ---------- karar döngüsü ----------
+  function schedule(ms) {
+    clearTimeout(timer);
+    timer = setTimeout(decide, ms);
+  }
+
+  function decide() {
+    if (document.hidden) return schedule(4000);
+    if (busy) return schedule(1200);
+    const st = machine.getState();
+    if (st === 'aim' || st === 'jump') return schedule(1500);
+    const sleepy = manualSleep || isNight();
+
+    // Görünmüyorsa ya da bir şeyin üstüne düştüyse (sayfa değişti, menü açıldı) kalk ve yer değiştir.
+    if (!inView() || !currentFree()) {
+      if (!relocate(() => schedule(sleepy ? 600 : rand(2500, 5000)))) schedule(3000);
       return;
     }
-    if (st !== 'aim' && st !== 'jump') {
-      machine.tickNatural();
+    if (sleepy) {
+      setState('sleep');
+      return schedule(8000);
     }
-  }, 6000);
+    if (st === 'sleep') {          // gündüz şekerlemesi kısa sürer
+      if (Math.random() < 0.3) temp('stretch', 1300);
+      return schedule(6000);
+    }
+    if (reduced()) {
+      setState('sit');
+      return schedule(8000);
+    }
+    if (Date.now() < typingUntil) {
+      setState('laptop');
+      return schedule(1500);
+    }
+    if (st === 'laptop') setState('sit');
 
-  // Day/Night tie-in
-  onDayNightChange((mode) => {
-    if (isManuallyAsleep) return;
-    if (mode === 'night') {
-      machine.setState('sleep');
+    const r = Math.random();
+    if (r < 0.32) {                // aynı rafta gezin
+      const run = runAtPos(freeSpots());
+      if (run && run.x2 - run.x1 > 40) {
+        walkTo(rand(run.x1, run.x2), () => schedule(rand(2000, 4500)));
+        return;
+      }
+      if (relocate(() => schedule(rand(2500, 5000)))) return;
+    } else if (r < 0.52) {         // başka bir rafa zıpla
+      if (relocate(() => schedule(rand(2500, 5000)))) return;
+    } else if (r < 0.64) {
+      temp('groom', 3200);
+    } else if (r < 0.74) {
+      temp('purr', 2600);
+    } else if (r < 0.80) {
+      temp('eat', 3600);
+    } else if (r < 0.85) {
+      temp('stretch', 1400);
+    } else if (r < 0.88) {
+      setState('sleep');           // kısa şekerleme; yukarıdaki dal uyandırır
     } else {
-      machine.setState('stretch');
-      setTimeout(() => machine.setState('sit'), 1500);
+      setState('sit');
     }
-  });
+    schedule(rand(3500, 7000));
+  }
 
-  // Celebrate event (ZIP ready / site completed)
-  window.addEventListener('site:celebrate', () => {
-    if (isManuallyAsleep) return;
-    machine.setState('purr');
-    showBubble(`🎉 ${t('mascot.purr')}`, 3000);
-    catEl.style.transform = 'scale(1.15) translateY(-8px)';
+  // ---------- imlece nişan alıp zıplama ----------
+  let cursor = null;
+  let idleTimer = null;
+  function canPlay() {
+    return !busy && !manualSleep && !isNight() && !reduced() && !document.hidden && inView();
+  }
+  function pounce(px, py, cooldown) {
+    if (!canPlay() || Date.now() - lastPounce < cooldown) return;
+    if (!['sit', 'walk', 'groom', 'purr', 'eat'].includes(machine.getState())) return;
+    const target = nearestSpot(freeSpots(), px, py + window.scrollY, 300);
+    if (!target || Math.hypot(target.x - pos.x, target.y - pos.y) < 24) return;
+    lastPounce = Date.now();
+    cancelAnim();
+    facing = target.x >= pos.x ? 1 : -1;
+    render();
+    setState('aim');
+    const id = ++actId;
     setTimeout(() => {
-      catEl.style.transform = 'none';
-      setTimeout(() => machine.setState('sit'), 2000);
-    }, 1000);
+      if (id !== actId || machine.getState() !== 'aim') return;
+      jumpTo(target.x, target.y, () => {
+        facing = px >= pos.x ? 1 : -1;
+        render();
+        if (Math.random() < 0.5) temp('purr', 2000);
+        schedule(rand(3000, 5000));
+      });
+    }, 1300);
+  }
+
+  window.addEventListener('mousemove', e => {
+    cursor = { x: e.clientX, y: e.clientY };
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => cursor && pounce(cursor.x, cursor.y, 20000), 4000);
+  }, { passive: true });
+
+  window.addEventListener('touchstart', e => {
+    const tp = e.touches && e.touches[0];
+    if (tp) pounce(tp.clientX, tp.clientY, 15000);
+  }, { passive: true });
+
+  // ---------- yazı yazarken laptopla yanına gelir ----------
+  document.addEventListener('keydown', e => {
+    const el = e.target;
+    if (!el || !el.matches || !el.matches('input, textarea, [contenteditable]')) return;
+    typingUntil = Date.now() + 3000;
+    if (busy || manualSleep || isNight() || reduced() || machine.getState() === 'laptop') return;
+    const r = el.getBoundingClientRect();
+    const target = nearestSpot(freeSpots(), r.left + r.width / 2, r.top + window.scrollY, 480);
+    const work = () => {
+      if (Date.now() < typingUntil) setState('laptop');
+      schedule(1500);
+    };
+    if (target && (!inView() || Math.hypot(target.x - pos.x, target.y - pos.y) > 40)) goToSpot(target, work);
+    else if (inView()) work();
+  }, true);
+
+  // ---------- olaylar ----------
+  let scrollTimer = null;
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      if (!busy && !inView()) schedule(700);
+    }, 450);
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    render();
+    schedule(800);
+  });
+  window.addEventListener('hashchange', () => schedule(700));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancelAnim();
+    else schedule(500);
   });
 
-  onLangChange(() => {
-    updateToggleBtnText();
+  toggleBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    manualSleep = !manualSleep;
+    try {
+      localStorage.setItem(STORAGE_KEY, String(manualSleep));
+    } catch (err) {
+      // yoksay
+    }
+    cancelAnim();
+    actId++;
+    if (manualSleep) setState('sleep');
+    else temp('stretch', 1300);
+    updateToggle();
+    schedule(1600);
   });
+
+  onDayNightChange(mode => {
+    cancelAnim();
+    actId++;
+    if (mode === 'night') {
+      setState('sleep');
+      drawPose('sleep');   // battaniyeli gece uykusu
+    } else if (!manualSleep) {
+      temp('stretch', 1500);
+    }
+    schedule(2000);
+  });
+
+  window.addEventListener('site:celebrate', () => {
+    if (manualSleep || isNight()) return;
+    temp('purr', 2600);
+    say(`🎉 ${t('mascot.purr')}`, 3000);
+    cat.classList.add('cat-hop');
+    setTimeout(() => cat.classList.remove('cat-hop'), 1000);
+  });
+
+  onLangChange(updateToggle);
+
+  // ---------- başlangıç ----------
+  updateToggle();
+  drawPose(manualSleep || isNight() ? 'sleep' : 'sit');
+  if (manualSleep || isNight()) setState('sleep');
+  render();
+  setTimeout(() => {
+    if (!relocate(() => schedule(rand(2000, 4000)))) {
+      // Hiç boş raf yoksa ekranın sol altında bekler, sonra yeniden dener.
+      pos = { x: 70, y: window.scrollY + window.innerHeight - 2 };
+      render();
+      schedule(3000);
+    }
+  }, 700);
 }
-

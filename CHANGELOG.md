@@ -1,5 +1,21 @@
 # Değişiklik kaydı
 
+## 2026-10-01 · Elif'in paleti ve yeni Tatlım (Claude, Elif isteği)
+- **Palet:** Arayüz rengi Elif'in seçtiği 36'lık pastel paletten geliyor.
+  - Zemin, dolgu ve kartlar pastel; `--soft-*` değişkenleri eklendi.
+  - Yazı ve bağlantılar aynı tonların koyusu (AA ≥ 4.5).
+  - Gece teması alacakaranlık moru.
+  - `test/contrast.test.js` değerleri doğrudan `base.css`'ten okuyup denetliyor.
+- **Tatlım baştan çizildi (özgün tasarım):** krem-şeftali tüy, zencefil çizgiler, parıltılı iri gözler, pembe yanaklar, nane fular ve altın çan.
+  - Pozlar: otur, yürü, yalan, mırla, nişan al, zıpla, gerin, uyu (gece battaniyeli), laptop (yazı yazılırken), mama.
+  - Referans görsellerdeki ticari karakter kopyalanmadı.
+- **Yürüyüş:** Gerçek kedi sırası: sol arka → sol ön → sağ arka → sağ ön, çeyrek faz farkıyla. Gövde iniş çıkış yapıyor, kuyruk salınıyor.
+- **Her yerde dolaşma:** Kedi artık alt şeritte değil; kartların ve panellerin üst kenarlarında yürüyor ve aralarında zıplıyor.
+  - Kaplayacağı alanda yazı, buton, alan ya da önizleme olan yerler seçilmiyor (`src/mascot/spots.js`).
+  - Sayfayla birlikte kayıyor, görünmezse kenardan içeri zıplıyor.
+  - Yazı yazılırken alanın yanına gelip laptopla "çalışıyor".
+- **Testler:** `test/cat-spots.test.js` (raf koşuları, en yakın nokta, bütün pozların çizimi).
+
 ## 2026-10-01 · v2 döngü sonrası düzeltme (Claude)
 - **Kedi uyanmıyordu:** Doğal döngü `sleep` durumunu atladığı için, gündüz rastgele uyuyan Tatlım bir daha uyanmıyordu. Artık gündüz uykusu kısa bir şekerleme oluyor (her 6 sn'lik tikte %25 uyanma). Gece sabaha kadar uyuyor; elle uyutulduysa kendiliğinden uyanmıyor (`src/mascot/cat.js`, `e34f011`).
 

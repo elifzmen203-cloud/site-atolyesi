@@ -1,30 +1,62 @@
-/* Design System Variables - Pastel Day Mode */
+/* Design System Variables - Pastel Day Mode
+   Renkler Elif'in seçtiği 36'lık pastel paletten (2026-10-01) alınmıştır.
+   Pastel tonlar zemin/dolgu içindir; yazı rolleri (--primary, --accent) aynı tonların
+   WCAG AA (>= 4.5:1) geçen koyulaştırılmış halidir. Değerler test/contrast.test.js ile denetlenir. */
 :root {
-  --bg: #fdfbf7;
-  --surface: #ffffff;
-  --ink: #292524;
-  --muted: #57534e;
-  --primary: #4f46e5;
-  --primary-ink: #ffffff;
-  --accent: #c2410c;
-  --border: #e7e5e4;
-  --radius: 16px;
-  --shadow: 0 4px 20px rgba(41, 37, 36, 0.05);
+  --bg: #fdf8f1;
+  --surface: #fffdf9;
+  --ink: #4a3a33;
+  --muted: #6e5a50;
+  --primary: #307e6f;          /* yazı/bağlantı turkuazı */
+  --primary-fill: #4ebca7;     /* buton dolgusu (paletten) */
+  --primary-fill-hover: #43ab97;
+  --primary-ink: #3a2c27;      /* dolgu üstündeki yazı */
+  --accent: #b03a6a;
+  --border: #efe3d6;
+  --focus-ring: rgba(78, 188, 167, 0.35);
+
+  /* Paletten yumuşak yüzeyler */
+  --soft-mint: #a9dbce;
+  --soft-aqua: #cbe5e7;
+  --soft-sage: #ccdec4;
+  --soft-butter: #f8e8c2;
+  --soft-peach: #fae3d1;
+  --soft-pink: #facce1;
+  --soft-rose: #f8c0cf;
+  --soft-lilac: #c1bfd5;
+  --soft-pistachio: #dddda9;
+
+  --radius: 20px;
+  --shadow: 0 6px 24px rgba(74, 58, 51, 0.07);
   --font-family: 'Nunito', system-ui, -apple-system, sans-serif;
   --line-height: 1.6;
 }
 
-/* Pastel Night Mode */
+/* Pastel Night Mode: alacakaranlık mor zemin, aynı paletin parlak pastelleri */
 [data-mode="night"] {
-  --bg: #18181b;
-  --surface: #27272a;
-  --ink: #fafaf9;
-  --muted: #a8a29e;
-  --primary: #818cf8;
-  --primary-ink: #18181b;
-  --accent: #fb923c;
-  --border: #3f3f46;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --bg: #2a2333;
+  --surface: #352c40;
+  --ink: #fbf1e8;
+  --muted: #d6c8d4;
+  --primary: #96dfd8;
+  --primary-fill: #96dfd8;
+  --primary-fill-hover: #84d2c0;
+  --primary-ink: #2a2333;
+  --accent: #f8c0cf;
+  --border: #4a3f57;
+  --focus-ring: rgba(150, 223, 216, 0.35);
+
+  --soft-mint: #3d4f55;
+  --soft-aqua: #3a4a58;
+  --soft-sage: #3e4a45;
+  --soft-butter: #4d4436;
+  --soft-peach: #4f4040;
+  --soft-pink: #523f52;
+  --soft-rose: #553e4b;
+  --soft-lilac: #453f5c;
+  --soft-pistachio: #47483a;
+
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
 *, *::before, *::after {
@@ -110,19 +142,20 @@ a:hover {
   transform: scale(0.96) translateY(0);
 }
 .btn-primary {
-  background-color: var(--primary);
+  background-color: var(--primary-fill);
   color: var(--primary-ink);
+  box-shadow: 0 3px 0 rgba(58, 44, 39, 0.12);
 }
 .btn-primary:hover {
-  background-color: #364fc7;
+  background-color: var(--primary-fill-hover);
   text-decoration: none;
 }
 .btn-secondary {
-  background-color: #edf2ff;
-  color: var(--primary);
+  background-color: var(--soft-pink);
+  color: var(--ink);
 }
 .btn-secondary:hover {
-  background-color: #dbe4ff;
+  background-color: var(--soft-rose);
   text-decoration: none;
 }
 .btn-outline {
@@ -169,7 +202,7 @@ label.form-label {
 .input:focus, .select:focus, .textarea:focus {
   border-color: var(--primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.18);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .textarea {
   resize: vertical;
@@ -206,7 +239,9 @@ label.form-label {
 }
 .tab-btn.active {
   color: var(--primary);
-  border-bottom-color: var(--primary);
+  border-bottom-color: var(--primary-fill);
+  background: var(--soft-mint);
+  border-radius: 14px 14px 0 0;
 }
 
 /* Copy notification live region */
