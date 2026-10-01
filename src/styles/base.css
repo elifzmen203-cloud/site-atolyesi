@@ -1,17 +1,30 @@
-/* Design System Variables */
+/* Design System Variables - Pastel Day Mode */
 :root {
-  --bg: #faf8f5;
+  --bg: #fdfbf7;
   --surface: #ffffff;
-  --ink: #1f2430;
-  --muted: #525966; /* 5.1:1 contrast on #ffffff and #faf8f5 for WCAG AA */
-  --primary: #3b5bdb;
+  --ink: #292524;
+  --muted: #57534e;
+  --primary: #4f46e5;
   --primary-ink: #ffffff;
-  --accent: #d97706; /* 4.6:1 contrast against white */
-  --border: #e3dfd8;
-  --radius: 10px;
-  --shadow: 0 4px 16px rgba(31, 36, 48, 0.06);
-  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --accent: #c2410c;
+  --border: #e7e5e4;
+  --radius: 16px;
+  --shadow: 0 4px 20px rgba(41, 37, 36, 0.05);
+  --font-family: 'Nunito', system-ui, -apple-system, sans-serif;
   --line-height: 1.6;
+}
+
+/* Pastel Night Mode */
+[data-mode="night"] {
+  --bg: #18181b;
+  --surface: #27272a;
+  --ink: #fafaf9;
+  --muted: #a8a29e;
+  --primary: #818cf8;
+  --primary-ink: #18181b;
+  --accent: #fb923c;
+  --border: #3f3f46;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 *, *::before, *::after {

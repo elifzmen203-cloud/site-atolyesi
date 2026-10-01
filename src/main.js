@@ -6,6 +6,8 @@ import { renderHomePage } from './pages/home.js';
 import { renderToolsPage } from './pages/tools.js';
 import { renderHowPage } from './pages/how.js';
 import { renderPrivacyPage } from './pages/privacy.js';
+import { initDayNightCycle } from './theme/daynight.js';
+import { initMascot } from './mascot/cat.js';
 
 const app = document.getElementById('app');
 
@@ -115,6 +117,8 @@ function renderApp() {
 function initApp() {
   window.addEventListener('hashchange', routeTo);
   onLangChange(renderApp);
+  initDayNightCycle();
+  initMascot();
   renderApp();
 }
 
