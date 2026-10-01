@@ -19,6 +19,7 @@ export function renderPrivacyPage() {
       <article class="info-card">
         <h3 data-i18n="privacy.card2.title">${t('privacy.card2.title')}</h3>
         <p data-i18n="privacy.card2.desc">${t('privacy.card2.desc')}</p>
+        <p><a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">${t('privacy.adsLink')}</a></p>
       </article>
 
       <article class="info-card">

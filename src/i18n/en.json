@@ -111,10 +111,10 @@
   "privacy.subtitle": "Your data stays entirely in your hands.",
   "privacy.card1.title": "No Server & No Database",
   "privacy.card1.desc": "Site Workshop is a strictly static client-side application. The business names, emails, and numbers you provide are never stored on any remote server.",
-  "privacy.card2.title": "No Cookies & No Analytics",
-  "privacy.card2.desc": "There are no trackers, third-party advertising cookies, or telemetry scripts. Only your chosen language preference is saved in your browser's localStorage.",
+  "privacy.card2.title": "Ads and Cookies",
+  "privacy.card2.desc": "To cover its costs, the site may show Google AdSense ads. Google and its partners may use cookies to serve, measure and personalise ads. Visitors from the European Economic Area, the UK and Switzerland see Google's consent message, where they can give or change their choice. Your language, theme and cat preferences are stored only in your browser (localStorage).",
   "privacy.card3.title": "External Requests",
-  "privacy.card3.desc": "No paid APIs are called. The only optional outbound network request is fetching open-source web fonts directly from Google Fonts.",
+  "privacy.card3.desc": "No paid APIs are used. External connections: Google Fonts for typefaces, Google AdSense for ads, a free exchange-rate service (open.er-api.com, at most once a day) for the approximate amount on the coffee button, and the donation page, which opens only if you click it. Donations are processed by the donation platform; your card details never reach this site.",
   "privacy.card4.title": "Clean Code & XSS Protection",
   "privacy.card4.desc": "All user-provided values in the generated website are securely escaped to guard against script injection and adhere to standard web standards.",
   "nav.aria": "Main menu",
@@ -213,5 +213,9 @@
   "studio.bgStyle": "Background",
   "studio.bgStyle.default": "Default",
   "studio.bgStyle.surface": "Surface Card",
-  "studio.bgStyle.accent": "Accent"
+  "studio.bgStyle.accent": "Accent",
+  "privacy.adsLink": "How Google uses data on partner sites",
+  "ads.label": "Advertisement",
+  "donate.cta": "Buy me a coffee",
+  "donate.hint": "Opens the donation page in a new tab. Your card converts the amount to your currency."
 }

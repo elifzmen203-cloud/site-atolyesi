@@ -111,10 +111,10 @@
   "privacy.subtitle": "Tus datos te pertenecen por completo.",
   "privacy.card1.title": "Sin Servidores ni Bases de Datos",
   "privacy.card1.desc": "El Taller de Sitios es una aplicación totalmente estática que funciona en tu navegador. Los datos que introduces nunca se guardan en servidores externos.",
-  "privacy.card2.title": "Sin Cookies ni Analíticas",
-  "privacy.card2.desc": "No utilizamos rastreadores, cookies publicitarias ni herramientas de telemetría. Únicamente tu idioma preferido se guarda en el localStorage del navegador.",
+  "privacy.card2.title": "Anuncios y cookies",
+  "privacy.card2.desc": "Para cubrir sus costes, el sitio puede mostrar anuncios de Google AdSense. Google y sus socios pueden usar cookies para mostrar, medir y personalizar anuncios. Los visitantes del Espacio Económico Europeo, el Reino Unido y Suiza ven el mensaje de consentimiento de Google, donde pueden dar o cambiar su elección. Tus preferencias de idioma, tema y gato se guardan solo en tu navegador (localStorage).",
   "privacy.card3.title": "Peticiones Externas",
-  "privacy.card3.desc": "No se llama a ninguna API de pago. La única solicitud externa opcional es para descargar tipografías abiertas de Google Fonts.",
+  "privacy.card3.desc": "No se usan API de pago. Conexiones externas: Google Fonts para las tipografías, Google AdSense para los anuncios, un servicio gratuito de tipos de cambio (open.er-api.com, como máximo una vez al día) para el importe aproximado del botón del café y la página de donaciones, que solo se abre si haces clic. La plataforma de donaciones procesa el pago; los datos de tu tarjeta nunca llegan a este sitio.",
   "privacy.card4.title": "Código Limpio y Protección XSS",
   "privacy.card4.desc": "Todos los campos completados por el usuario se escapan de forma segura para prevenir ataques de inyección y cumplir con los estándares web.",
   "nav.aria": "Menú principal",
@@ -213,5 +213,9 @@
   "studio.bgStyle": "Fondo",
   "studio.bgStyle.default": "Predeterminado",
   "studio.bgStyle.surface": "Tarjeta Clara",
-  "studio.bgStyle.accent": "Destacado"
+  "studio.bgStyle.accent": "Destacado",
+  "privacy.adsLink": "Cómo usa Google los datos en sitios de socios",
+  "ads.label": "Publicidad",
+  "donate.cta": "Invítame a un café",
+  "donate.hint": "La página de donaciones se abre en una pestaña nueva. Tu tarjeta convierte el importe a tu moneda."
 }

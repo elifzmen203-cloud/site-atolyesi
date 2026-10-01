@@ -10,6 +10,8 @@ import { renderHowPage } from './pages/how.js';
 import { renderPrivacyPage } from './pages/privacy.js';
 import { initDayNightCycle } from './theme/daynight.js';
 import { initMascot } from './mascot/cat.js';
+import { initAds } from './monetize/ads.js';
+import { renderDonateButton } from './monetize/donate.js';
 
 const app = document.getElementById('app');
 
@@ -50,6 +52,9 @@ function renderHeader() {
       </div>
     </div>
   `;
+
+  const donate = renderDonateButton('donate-header');
+  if (donate) header.querySelector('.header-actions').prepend(donate);
 
   const langSelect = header.querySelector('#app-lang-select');
   langSelect.addEventListener('change', (e) => {
@@ -117,6 +122,8 @@ function renderApp() {
       <p>&copy; ${new Date().getFullYear()} <strong data-i18n="app.title">${t('app.title')}</strong> — <span data-i18n="app.tagline">${t('app.tagline')}</span></p>
     </div>
   `;
+  const footerDonate = renderDonateButton('donate-footer');
+  if (footerDonate) footer.querySelector('.container').appendChild(footerDonate);
   app.appendChild(footer);
 
   routeTo();
@@ -128,6 +135,7 @@ function initApp() {
   initDayNightCycle();
   initMascot();
   renderApp();
+  initAds();
 }
 
 initApp();

@@ -111,10 +111,10 @@
   "privacy.subtitle": "Verileriniz tamamen size aittir.",
   "privacy.card1.title": "Sunucu ve Veri Tabanı Yok",
   "privacy.card1.desc": "Site Atölyesi tamamen istemci tarafında (tarayıcınızda) çalışan statik bir uygulamadır. Girdiğiniz işletme bilgileri, telefonlar ve adresler hiçbir sunucuya kaydedilmez.",
-  "privacy.card2.title": "Çerez ve Analitik Yok",
-  "privacy.card2.desc": "Sitemizde kullanıcı takibi, üçüncü taraf izleme çerezleri veya reklam ağları bulunmaz. Yalnızca seçtiğiniz dil tercihi tarayıcınızın yerel hafızasında (localStorage) saklanır.",
+  "privacy.card2.title": "Reklamlar ve Çerezler",
+  "privacy.card2.desc": "Site, masrafları karşılamak için Google AdSense reklamları gösterebilir. Google ve iş ortakları reklamları göstermek, ölçmek ve kişiselleştirmek için çerez kullanabilir. Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'den gelen ziyaretçilere Google'ın onay penceresi gösterilir; tercihinizi oradan verebilir ya da değiştirebilirsiniz. Dil, tema ve kedi tercihleriniz yalnız tarayıcınızda (localStorage) saklanır.",
   "privacy.card3.title": "Dış İstekler",
-  "privacy.card3.desc": "Uygulama harici hiçbir ücretli API kullanmaz. Tek isteğe bağlı dış bağlantı, yazı tiplerinin yüklenmesi için doğrudan Google Fonts servisidir.",
+  "privacy.card3.desc": "Ücretli API kullanılmaz. Dış bağlantılar: yazı tipleri için Google Fonts, reklamlar için Google AdSense, kahve butonundaki yaklaşık tutar için ücretsiz bir döviz kuru servisi (open.er-api.com, günde en çok bir kez) ve yalnız tıklarsanız açılan bağış sayfası. Bağış ödemesini bağış platformu alır; kart bilgileriniz bu siteye hiç gelmez.",
   "privacy.card4.title": "Temiz Kod & XSS Koruması",
   "privacy.card4.desc": "Üretilen web sitesinde tüm kullanıcı girdileri güvenli biçimde kaçışlanır ve temiz, denetlenmiş HTML/CSS standartlarına uygun kod üretilir.",
   "nav.aria": "Ana menü",
@@ -213,5 +213,9 @@
   "studio.bgStyle": "Zemin",
   "studio.bgStyle.default": "Varsayılan",
   "studio.bgStyle.surface": "Açık Kart",
-  "studio.bgStyle.accent": "Vurgulu"
+  "studio.bgStyle.accent": "Vurgulu",
+  "privacy.adsLink": "Google'ın iş ortağı sitelerdeki veri kullanımı",
+  "ads.label": "Reklam",
+  "donate.cta": "Bana kahve ısmarla",
+  "donate.hint": "Bağış sayfası yeni sekmede açılır. Kartınız tutarı kendi para biriminize çevirir."
 }

@@ -94,6 +94,51 @@ body {
   cursor: pointer;
 }
 
+/* "Bana kahve ısmarla" */
+.donate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--soft-butter);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+}
+.donate-btn:hover {
+  background: var(--soft-peach);
+  transform: translateY(-1px);
+  opacity: 1;
+}
+.donate-footer {
+  margin-top: 0.75rem;
+}
+@media (max-width: 768px) {
+  .donate-header { display: none; } /* telefonda yalnız altta görünür */
+}
+
+/* Reklam alanları: araçların ve butonların dışında, sayfanın en üstü ve en altı */
+.ad-slot {
+  max-width: 1200px;
+  margin: 0.75rem auto;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  min-height: 60px;
+}
+.ad-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+}
+
 /* Page Container */
 .main-content {
   /* Üstteki 4.5rem: Tatlım'ın kartların üst kenarında yürüyebileceği "raf" boşluğu (kedi 51px). */

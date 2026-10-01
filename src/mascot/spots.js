@@ -17,7 +17,9 @@ export const PERCH_SELECTOR = [
 // Bunlardan birinin üstüne düşen nokta içerik sayılır.
 const CONTENT_SELECTOR = 'a,button,input,select,textarea,label,img,iframe,video,canvas,svg,p,h1,h2,h3,h4,h5,h6,li,dt,dd,' +
   'span,code,pre,strong,em,small,td,th,summary,[contenteditable],[role="button"],[role="tab"],.btn,' +
-  '.app-header,#cat-sleep-toggle,.toast-msg';
+  '.app-header,#cat-sleep-toggle,.toast-msg,' +
+  // Reklamlar: AdSense, reklama dikkat çeken/tıklatmaya teşvik eden her şeyi yasaklar; kedi yaklaşmaz.
+  '.ad-slot,.adsbygoogle,.donate-btn';
 
 const STEP = 26;           // raf boyunca örnek aralığı (px)
 

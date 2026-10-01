@@ -1,5 +1,20 @@
 # Değişiklik kaydı
 
+## 2026-10-01 · Gelir altyapısı: AdSense ve "Bana kahve ısmarla" (Claude, Elif isteği)
+- **`src/config.js`:** AdSense yayıncı kimliği, reklam birimleri ve bağış adresi. Yalnız herkese açık kimlikler girer; boş bırakılan özellik görünmez ve dış kod yüklemez.
+- **Reklam (`src/monetize/ads.js`):**
+  - AdSense betiği yalnız kimlik girilince yüklenir.
+  - Reklam alanları sayfanın en üstü ve en altıdır (`#app` dışında). Araçlara ve butonlara girmez, dil değişiminde yeniden yüklenmez.
+  - Çerez onayı AdSense'in kendi onaylı CMP'siyle verilir (panelde "Gizlilik ve mesajlaşma").
+- **Tatlım reklamlardan uzak durur:** `.ad-slot`, `.adsbygoogle` ve `.donate-btn` içerik sayılır (AdSense tıklatmaya teşvik yasağı).
+- **Kahve butonu (`src/monetize/donate.js`):** Başlıkta (telefonda yalnız altta) ve sayfa sonunda görünür, "☕ … · 1 $ (≈ 41 ₺)" yazar.
+  - Ziyaretçinin para birimi dil/bölge ayarından bulunur.
+  - Kur, anahtarsız ücretsiz servisten (open.er-api.com) günde en çok bir kez alınır.
+  - Ödemeyi bağış platformu alır.
+- **Gizlilik sayfası:** 4 dilde güncellendi (reklam, çerez, onay penceresi, dış bağlantılar), Google'ın veri kullanımı bağlantısı eklendi.
+- **Google arama:** `public/sitemap.xml` (Search Console'a gönderilecek).
+- **Testler:** `test/monetize.test.js` (para birimi, yaklaşık tutar, ayarda gizli bilgi olmaması).
+
 ## 2026-10-01 · Tatlım'a yeni etkinlikler (Claude, Elif isteği)
 - **Yeni pozlar:** sırt üstü uyku (seğiren pati), gündüz de battaniye altında şekerleme, aşçı şapkasıyla bisküvi yoğurma (hamur ezilir, un uçuşur, oklava), mama + pipetli süt, laptopun arkasında yazma (`</>`, ♥ ve ✓ işaretleri yükselir).
 - **Davranış:** Gece çoğunlukla battaniye altında, bazen sırt üstü uyuyor. Etkinlikler (bisküvi 6,5 sn, laptop 6 sn, yemek 5 sn) karar döngüsü tarafından bölünmüyor.
