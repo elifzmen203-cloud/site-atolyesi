@@ -1,5 +1,8 @@
 # Değişiklik kaydı
 
+## 2026-10-01 · v2 döngü sonrası düzeltme (Claude)
+- **Kedi uyanmıyordu:** Doğal döngü `sleep` durumunu atladığı için, gündüz rastgele uyuyan Tatlım bir daha uyanmıyordu. Artık gündüz uykusu kısa bir şekerleme oluyor (her 6 sn'lik tikte %25 uyanma). Gece sabaha kadar uyuyor; elle uyutulduysa kendiliğinden uyanmıyor (`src/mascot/cat.js`, `e34f011`).
+
 ## 2026-10-01 · v2 Tur 4 (Antigravity) — Sihirbaz, Serbest Atölye, Küçük Animasyonlar ve Ara Denetim Düzeltmeleri
 - **Ara Denetim 3 Düzeltmeleri:**
   - Renk seçici kasma düzeltmesi: `tools.js` içinde `input` olayında tam sekme yeniden çizimi kaldırıldı, sürüklerken yalnızca DOM swatch ve hex metin elemanları güncelleniyor; tam çizim yalnızca `change` olayında yapılıyor.
