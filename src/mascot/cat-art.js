@@ -281,7 +281,7 @@ function sleepBackPose() {
     <rect class="o" x="35" y="40" width="9" height="15" rx="4.5" fill="${C.furShade}" transform="rotate(12 39 50)"/>
     <ellipse class="o" cx="58" cy="47" rx="5" ry="4.2" fill="${C.fur}"/>
     <ellipse class="o" cx="66" cy="45" rx="5" ry="4.2" fill="${C.furShade}"/>
-    ${head({ x: 76, y: 60, eye: 'closed', mouthKind: 'small', tilt: 68 })}
+    ${head({ x: 77, y: 62, eye: 'closed', mouthKind: 'w', tilt: 160 })}
     <g class="cat-zz"><text x="80" y="26" class="zz zz1">z</text><text x="87" y="15" class="zz zz2">Z</text></g>`;
 }
 
