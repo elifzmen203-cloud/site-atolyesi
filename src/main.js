@@ -1,0 +1,118 @@
+import './styles/base.css';
+import './styles/app.css';
+
+import { t, getLang, setLang, onLangChange, SUPPORTED_LANGS, applyI18n } from './i18n/index.js';
+import { renderHomePage } from './pages/home.js';
+import { renderToolsPage } from './pages/tools.js';
+import { renderHowPage } from './pages/how.js';
+import { renderPrivacyPage } from './pages/privacy.js';
+
+const app = document.getElementById('app');
+
+function renderHeader() {
+  const currentLang = getLang();
+  const langLabels = {
+    tr: 'Türkçe',
+    en: 'English',
+    ru: 'Русский',
+    es: 'Español'
+  };
+
+  const header = document.createElement('header');
+  header.className = 'app-header';
+  header.innerHTML = `
+    <div class="container app-header-inner">
+      <a href="#/" class="brand">
+        <span class="brand-icon">✦</span>
+        <span data-i18n="app.title">${t('app.title')}</span>
+      </a>
+
+      <nav class="nav-menu" aria-label="Ana Menü">
+        <a href="#/" class="nav-link" data-route="#/" data-i18n="nav.generator">${t('nav.generator')}</a>
+        <a href="#/araclar" class="nav-link" data-route="#/araclar" data-i18n="nav.tools">${t('nav.tools')}</a>
+        <a href="#/nasil" class="nav-link" data-route="#/nasil" data-i18n="nav.how">${t('nav.how')}</a>
+        <a href="#/gizlilik" class="nav-link" data-route="#/gizlilik" data-i18n="nav.privacy">${t('nav.privacy')}</a>
+      </nav>
+
+      <div class="header-actions">
+        <label for="app-lang-select" class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);">${t('app.langSelect')}</label>
+        <select id="app-lang-select" class="lang-selector" aria-label="${t('app.langSelect')}">
+          ${SUPPORTED_LANGS.map(code => `
+            <option value="${code}" ${currentLang === code ? 'selected' : ''}>${langLabels[code] || code.toUpperCase()}</option>
+          `).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+
+  const langSelect = header.querySelector('#app-lang-select');
+  langSelect.addEventListener('change', (e) => {
+    setLang(e.target.value);
+  });
+
+  return header;
+}
+
+function updateActiveNav(route) {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const target = link.getAttribute('data-route');
+    if (target === route || (route === '' && target === '#/')) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+function routeTo() {
+  const hash = window.location.hash || '#/';
+  const cleanRoute = hash.split('?')[0];
+
+  const mainContainer = document.getElementById('main-view');
+  if (!mainContainer) return;
+
+  mainContainer.innerHTML = '';
+
+  if (cleanRoute === '#/araclar') {
+    mainContainer.appendChild(renderToolsPage());
+  } else if (cleanRoute === '#/nasil') {
+    mainContainer.appendChild(renderHowPage());
+  } else if (cleanRoute === '#/gizlilik') {
+    mainContainer.appendChild(renderPrivacyPage());
+  } else {
+    mainContainer.appendChild(renderHomePage());
+  }
+
+  updateActiveNav(cleanRoute);
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function initApp() {
+  app.innerHTML = '';
+
+  const header = renderHeader();
+  app.appendChild(header);
+
+  const main = document.createElement('main');
+  main.id = 'main-view';
+  main.className = 'main-content';
+  app.appendChild(main);
+
+  const footer = document.createElement('footer');
+  footer.style.cssText = 'border-top: 1px solid var(--border); background: var(--surface); padding: 2rem 0; font-size: 0.9rem; color: var(--muted); text-align: center;';
+  footer.innerHTML = `
+    <div class="container">
+      <p>&copy; ${new Date().getFullYear()} <strong data-i18n="app.title">${t('app.title')}</strong> — <span data-i18n="app.tagline">${t('app.tagline')}</span></p>
+    </div>
+  `;
+  app.appendChild(footer);
+
+  window.addEventListener('hashchange', routeTo);
+  onLangChange(() => {
+    initApp();
+  });
+
+  routeTo();
+}
+
+initApp();
