@@ -37,11 +37,14 @@ export function initAds() {
   if (loaded || typeof document === 'undefined' || !adsEnabled()) return;
   loaded = true;
 
-  const script = document.createElement('script');
-  script.async = true;
-  script.crossOrigin = 'anonymous';
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE_CONFIG.adsenseClient}`;
-  document.head.appendChild(script);
+  // Betik doğrulama için index.html'de de bulunur (Google'ın botu ham HTML'e bakar); iki kez yüklenmez.
+  if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE_CONFIG.adsenseClient}`;
+    document.head.appendChild(script);
+  }
 
   const app = document.getElementById('app');
   const top = slot('top');

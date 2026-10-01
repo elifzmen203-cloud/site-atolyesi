@@ -8,7 +8,7 @@ export const SITE_CONFIG = {
   // Google AdSense yayıncı kimliği, ör. 'ca-pub-1234567890123456'.
   // Doluysa AdSense betiği yüklenir. Çerez onay penceresi AdSense panelindeki
   // "Gizlilik ve mesajlaşma" bölümünden açılır (Google'ın onaylı ücretsiz CMP'si).
-  adsenseClient: '',
+  adsenseClient: 'ca-pub-7539312948961348',
 
   // AdSense'te oluşturulan reklam birimi kimlikleri (isteğe bağlı). Boşsa o alan çıkmaz.
   // top: sayfanın en üstü, bottom: sayfanın en altı. İkisi de araçların ve butonların dışındadır.
