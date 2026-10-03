@@ -23,3 +23,7 @@ npm test
 ```
 
 Geliştirme kuralları: [PROJE_KURALLARI.md](PROJE_KURALLARI.md). Bu proje ElifOS döngü modunda (web tipi) geliştirilir; görevler, kararlar ve defter ElifOS vault'undadır.
+
+## Lisans ve katkı
+
+Site Atölyesi tamamen ücretsiz ve açık kaynaktır: [MIT lisansı](LICENSE). Kodu kullanabilir, değiştirebilir ve kendi sitende yayınlayabilirsin. Hata bildirimi ve önerin için GitHub'da issue aç; katkı için fork edip pull request gönder.
