@@ -8,6 +8,8 @@ import { renderWizardPage } from './pages/wizard.js';
 import { renderStudioPage } from './pages/studio.js';
 import { renderHowPage } from './pages/how.js';
 import { renderPrivacyPage } from './pages/privacy.js';
+import { renderAboutPage } from './pages/about.js';
+import { renderContactPage } from './pages/contact.js';
 import { initDayNightCycle } from './theme/daynight.js';
 import { initMascot } from './mascot/cat.js';
 import { initAds } from './monetize/ads.js';
@@ -94,6 +96,10 @@ function routeTo() {
     mainContainer.appendChild(renderHowPage());
   } else if (cleanRoute === '#/gizlilik') {
     mainContainer.appendChild(renderPrivacyPage());
+  } else if (cleanRoute === '#/hakkinda') {
+    mainContainer.appendChild(renderAboutPage());
+  } else if (cleanRoute === '#/iletisim') {
+    mainContainer.appendChild(renderContactPage());
   } else {
     mainContainer.appendChild(renderHomePage());
   }
@@ -119,6 +125,11 @@ function renderApp() {
   footer.style.cssText = 'border-top: 1px solid var(--border); background: var(--surface); padding: 2rem 0; font-size: 0.9rem; color: var(--muted); text-align: center;';
   footer.innerHTML = `
     <div class="container">
+      <nav class="footer-links" aria-label="${t('footer.aria')}">
+        <a href="#/hakkinda" class="nav-link" data-route="#/hakkinda" data-i18n="nav.about">${t('nav.about')}</a>
+        <a href="#/iletisim" class="nav-link" data-route="#/iletisim" data-i18n="nav.contact">${t('nav.contact')}</a>
+        <a href="#/gizlilik" class="nav-link" data-route="#/gizlilik" data-i18n="nav.privacy">${t('nav.privacy')}</a>
+      </nav>
       <p>&copy; ${new Date().getFullYear()} <strong data-i18n="app.title">${t('app.title')}</strong> — <span data-i18n="app.tagline">${t('app.tagline')}</span></p>
     </div>
   `;

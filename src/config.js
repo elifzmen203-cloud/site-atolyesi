@@ -16,5 +16,10 @@ export const SITE_CONFIG = {
 
   // "Bana kahve ısmarla" sayfasının adresi (Buy Me a Coffee, Patreon vb.). Boşken buton görünmez.
   donateUrl: 'https://buymeacoffee.com/elifzmen20t',
-  donateUsd: 1
+  donateUsd: 1,
+
+  // İletişim sayfası (#/iletisim). Boş bırakılan kanal görünmez.
+  // contactEmail sitede herkese açık görünür; buraya yalnız bu iş için açılmış bir adres yazılır.
+  contactEmail: '',
+  issuesUrl: 'https://github.com/elifzmen203-cloud/site-atolyesi/issues'
 };

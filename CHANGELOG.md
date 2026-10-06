@@ -1,5 +1,12 @@
 # Değişiklik kaydı
 
+## 2026-10-06 · Hakkında ve İletişim sayfaları (Claude, Elif isteği)
+- **Neden:** AdSense inceleme e-postası şeffaflık için "Hakkımızda" ve "Bize Ulaşın" sayfalarını istiyor.
+- **`#/hakkinda` (`src/pages/about.js`):** Site ne yapar, neden ücretsiz (reklam + kahve), açık kaynak (MIT), kim yapıyor. 4 dilde.
+- **`#/iletisim` (`src/pages/contact.js`):** E-posta, GitHub issue ve kahve ısmarla kartları. Kanallar `config.js`'ten (`contactEmail`, `issuesUrl`, `donateUrl`) gelir; boş olan görünmez. E-posta adresi henüz boş.
+- **Alt bilgi:** Hakkında · İletişim · Gizlilik bağlantıları.
+- **Telefonda menü:** 360 px'te üst menü taşıp "Nasıl Çalışır" ve "Gizlilik" kesiliyordu; artık alt satıra iniyor.
+
 ## 2026-10-01 · Gelir altyapısı: AdSense ve "Bana kahve ısmarla" (Claude, Elif isteği)
 - **`src/config.js`:** AdSense yayıncı kimliği, reklam birimleri ve bağış adresi. Yalnız herkese açık kimlikler girer; boş bırakılan özellik görünmez ve dış kod yüklemez.
 - **Reklam (`src/monetize/ads.js`):**
