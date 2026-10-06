@@ -20,6 +20,6 @@ export const SITE_CONFIG = {
 
   // İletişim sayfası (#/iletisim). Boş bırakılan kanal görünmez.
   // contactEmail sitede herkese açık görünür; buraya yalnız bu iş için açılmış bir adres yazılır.
-  contactEmail: '',
+  contactEmail: 'kotosucuk@gmail.com',
   issuesUrl: 'https://github.com/elifzmen203-cloud/site-atolyesi/issues'
 };
